@@ -1,0 +1,239 @@
+<link rel="stylesheet" href="/static/css/auth-modern.css">
+
+<script>
+// Apply theme immediately to prevent flash (runs before body renders)
+(function() {
+    const STORAGE_KEY = 'uet-theme';
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const theme = stored || systemTheme;
+    document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+
+<div class="auth-split-screen">
+    <!-- Left Brand Panel -->
+    <div class="auth-brand-panel {{.AppType}}">
+        <a href="/" class="auth-back-link auth-back-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+            </svg>
+            Back to Home
+        </a>
+        <div class="auth-brand-content">
+            <div class="auth-brand-logo">
+                <img src="/static/images/logo.png" alt="Duo Security">
+            </div>
+            
+            {{if eq .AppType "dmp"}}
+                <h1 class="auth-brand-title">Device Management Portal</h1>
+                <p class="auth-brand-subtitle">Validate the self-service Device Management Portal experience against your policies</p>
+                <div class="auth-brand-callouts">
+                    <div class="auth-brand-chip">
+                        Device lifecycle previews
+                    </div>
+                    <div class="auth-brand-chip">
+                        Policy + security checks
+                    </div>
+                </div>
+            {{else if eq .AppType "v4"}}
+                <h1 class="auth-brand-title">Duo WebSDK Universal Prompt</h1>
+                <p class="auth-brand-subtitle">Drive Universal Prompt scenarios and inspect Duo responses returned to your application</p>
+                <div class="auth-brand-callouts">
+                    <div class="auth-brand-chip">
+                        Universal Prompt replay
+                    </div>
+                    <div class="auth-brand-chip">
+                        Raw response visibility
+                    </div>
+                </div>
+            {{else if eq .AppType "oidc"}}
+                <h1 class="auth-brand-title">Duo SSO OIDC</h1>
+                <p class="auth-brand-subtitle">Validate OAuth 2.0 / OpenID Connect integrations and review returned tokens and claims</p>
+                <div class="auth-brand-callouts">
+                    <div class="auth-brand-chip">
+                        Token + claim review
+                    </div>
+                    <div class="auth-brand-chip">
+                        Raw response visibility
+                    </div>
+                </div>
+            {{else if eq .AppType "saml"}}
+                <h1 class="auth-brand-title">Duo SSO SAML 2.0</h1>
+                <p class="auth-brand-subtitle">Trigger Duo SSO SAML assertions and examine attributes for claim transformation workflows</p>
+                <div class="auth-brand-callouts">
+                    <div class="auth-brand-chip">
+                        Assertion inspection
+                    </div>
+                    <div class="auth-brand-chip">
+                        Claim transformations
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    </div>
+
+    <!-- Right Auth Panel -->
+    <div class="auth-form-panel">
+        <div class="auth-form-container">
+            <div class="auth-header">
+                <h1 class="auth-welcome">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to continue to your account</p>
+                <p class="auth-app-name">{{.AppName}}</p>
+                <div class="auth-tags">
+                    {{if eq .AppType "dmp"}}
+                        <span class="auth-tag">Device Management</span>
+                    {{else if eq .AppType "v4"}}
+                        <span class="auth-tag">WebSDK v4</span>
+                        <span class="auth-tag">Universal Prompt</span>
+                    {{else if eq .AppType "oidc"}}
+                        <span class="auth-tag">OIDC</span>
+                        <span class="auth-tag">OAuth 2.0</span>
+                    {{else if eq .AppType "saml"}}
+                        <span class="auth-tag">SAML 2.0</span>
+                        <span class="auth-tag">SSO</span>
+                    {{end}}
+                </div>
+            </div>
+
+            {{if .Message}}
+            <div class="auth-message">
+                {{.Message}}
+            </div>
+            {{end}}
+
+            {{if or (eq .AppType "dmp") (eq .AppType "v4")}}
+                <!-- Form-based Authentication -->
+                <form action="/app/{{.AppID}}" method="post" class="auth-form">
+                    <div class="auth-field">
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            class="auth-input" 
+                            placeholder="Username"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="auth-field">
+                        <div class="auth-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="auth-input" 
+                                placeholder="Password"
+                                autocomplete="current-password"
+                                required
+                            >
+                            <button type="button" class="auth-password-toggle" onclick="togglePassword()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" id="show-password-icon">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" id="hide-password-icon" style="display: none;">
+                                    <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                                    <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                                    <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12-.708.708z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-button-primary">
+                        Sign In
+                    </button>
+                </form>
+
+            {{else if eq .AppType "oidc"}}
+                <!-- OIDC SSO Authentication -->
+                <div class="auth-form">
+                    <a href="/app/{{.AppID}}/oidc/initiate" class="auth-button-sso">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        </svg>
+                        Continue with Duo OIDC
+                    </a>
+                </div>
+
+                <!-- Configuration Section -->
+                <div class="auth-config-section">
+                    <h3 class="auth-config-heading">Configuration Details</h3>
+                    <div class="auth-config-inner">
+                        <div class="auth-config-field">
+                            <label class="auth-config-label">Client ID</label>
+                            <div class="auth-config-value">
+                                <input type="text" class="auth-config-input" value="{{.ClientID}}" readonly>
+                            </div>
+                        </div>
+                        <div class="auth-config-field">
+                            <label class="auth-config-label">Redirect URI</label>
+                            <div class="auth-config-value">
+                                <input type="text" class="auth-config-input" value="{{.RedirectURI}}" readonly>
+                            </div>
+                            <p class="auth-config-help">Configure this URI in your Duo OIDC application</p>
+                        </div>
+                    </div>
+                </div>
+
+            {{else if eq .AppType "saml"}}
+                <!-- SAML SSO Authentication -->
+                <div class="auth-form">
+                    <a href="/app/{{.AppID}}/saml/initiate" class="auth-button-sso">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        </svg>
+                        Continue with Duo SAML
+                    </a>
+                </div>
+
+                <!-- Configuration Section -->
+                <div class="auth-config-section">
+                    <h3 class="auth-config-heading">Configuration Details</h3>
+                    <div class="auth-config-inner">
+                        <div class="auth-config-field">
+                            <label class="auth-config-label">Entity ID</label>
+                            <div class="auth-config-value">
+                                <input type="text" class="auth-config-input" value="{{.EntityID}}" readonly>
+                            </div>
+                        </div>
+                        <div class="auth-config-field">
+                            <label class="auth-config-label">Service Provider Metadata</label>
+                            <div class="auth-config-value">
+                                <input type="text" class="auth-config-input" value="{{.MetadataURL}}" readonly>
+                                <a href="{{.MetadataURL}}" target="_blank" class="auth-config-link">
+                                    <span>View</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                            <p class="auth-config-help">Download this metadata to configure Duo as your Identity Provider</p>
+                        </div>
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const showIcon = document.getElementById('show-password-icon');
+    const hideIcon = document.getElementById('hide-password-icon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        showIcon.style.display = 'none';
+        hideIcon.style.display = 'block';
+    } else {
+        passwordInput.type = 'password';
+        showIcon.style.display = 'block';
+        hideIcon.style.display = 'none';
+    }
+}
+</script>

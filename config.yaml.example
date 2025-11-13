@@ -1,0 +1,75 @@
+# Duo User Experience Toolkit Configuration
+# This file stores your Duo tenants and applications
+# The applications are managed from the web interface using the Admin API. 
+# YOU DO NOT NEED TO MANUALLY CREATE THEM HERE (unless you want to)
+
+# Tenants store Admin API credentials once and can have multiple applications
+tenants:
+  - id: "example-tenant-id"
+    name: "Production"
+    admin_api_key: "DIxxxxxxxxxxxxxxxxxx"
+    admin_api_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    api_hostname: "api-xxxxxxxx.duosecurity.com"
+
+# Applications are created under tenants and automatically prefixed with tenant name
+applications:
+  # WebSDK (Universal Prompt) Application
+  - id: "example-websdk-id"
+    tenant_id: "example-tenant-id"
+    name: "Production - WebSDK"
+    type: "websdk"
+    enabled: true
+    client_id: "DIxxxxxxxxxxxxxxxxxx"
+    client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    api_hostname: "api-xxxxxxxx.duosecurity.com"
+
+  # Device Management Portal (DMP) Application
+  - id: "example-dmp-id"
+    tenant_id: "example-tenant-id"
+    name: "Production - DMP"
+    type: "dmp"
+    enabled: true
+    client_id: "DIxxxxxxxxxxxxxxxxxx"
+    client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    api_hostname: "api-xxxxxxxx.duosecurity.com"
+
+  # SAML 2.0 Application
+  - id: "example-saml-id"
+    tenant_id: "example-tenant-id"
+    name: "Production - SAML"
+    type: "saml"
+    enabled: true
+    client_id: ""  # Not used for SAML
+    client_secret: ""  # Not used for SAML
+    api_hostname: "api-xxxxxxxx.duosecurity.com"
+    # SAML Service Provider fields
+    entity_id: "http://localhost:8080/app/example-saml-id/saml"
+    acs_url: "http://localhost:8080/app/example-saml-id/saml/acs"
+    metadata_url: "http://localhost:8080/app/example-saml-id/saml/metadata"
+    # SAML IDP metadata (from Duo)
+    idp_entity_id: "https://sso-xxxxxxxx.sso.duosecurity.com/saml2/sp/DIxxxxxxxxxxxxxxxxxx/metadata"
+    idp_sso_url: "https://sso-xxxxxxxx.sso.duosecurity.com/saml2/sp/DIxxxxxxxxxxxxxxxxxx/sso"
+    idp_certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIDxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      -----END CERTIFICATE-----
+
+  # OIDC (OpenID Connect) Application
+  - id: "example-oidc-id"
+    tenant_id: "example-tenant-id"
+    name: "Production - OIDC"
+    type: "oidc"
+    enabled: true
+    client_id: "DIxxxxxxxxxxxxxxxxxx"
+    client_secret: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    api_hostname: "api-xxxxxxxx.duosecurity.com"
+    # OIDC Relying Party fields
+    redirect_uri: "http://localhost:8080/app/example-oidc-id/oidc/callback"
+    # OIDC IDP metadata (from Duo)
+    idp_discovery_url: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx/.well-known/openid-configuration"
+    idp_issuer: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx"
+    idp_authorization_endpoint: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx/authorize"
+    idp_token_endpoint: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx/token"
+    idp_userinfo_endpoint: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx/userinfo"
+    idp_jwks_endpoint: "https://sso-xxxxxxxx.sso.duosecurity.com/oidc/DIxxxxxxxxxxxxxxxxxx/jwks"

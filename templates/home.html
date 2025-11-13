@@ -1,0 +1,494 @@
+<section class="section">
+    <style>
+    .chevron-icon {
+        transition: transform 0.3s ease;
+    }
+    .tenant-row {
+        transition: background-color 0.2s ease;
+    }
+    .tenant-row:hover {
+        background-color: rgba(72, 95, 199, 0.15) !important;
+    }
+    .app-row {
+        transition: background-color 0.2s ease, opacity 0.2s ease;
+    }
+    .app-row:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+    </style>
+    <div class="container">
+        <div class="has-text-centered mb-6">
+            <h1 class="title is-2">User Experience Toolkit</h1>
+            <p class="subtitle is-5">Quickly test different WebSDK Experiences, the Device Management Portal, and any policy behavior.</p>
+        </div>
+
+        <div id="alert-container" class="mb-4"></div>
+        
+        {{if .HasTenants}}
+        {{if .Applications}}
+        <div class="is-flex is-justify-content-flex-end is-align-items-center mb-4" style="gap: 0.75rem;">
+            <div class="buttons has-addons mb-0" id="view-toggle">
+                <button class="button is-active" data-view="cards" title="Card View">
+                    <span class="icon is-small">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                        </svg>
+                    </span>
+                </button>
+                <button class="button" data-view="list" title="List View">
+                    <span class="icon is-small">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <button type="button" class="button is-success" id="add-app-btn">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                </span>
+                <span>Add Application</span>
+            </button>
+        </div>
+        {{else}}
+        <div class="is-flex is-justify-content-flex-end mb-4">
+            <button type="button" class="button is-success" id="add-app-btn">
+                <span class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                </span>
+                <span>Add Application</span>
+            </button>
+        </div>
+        {{end}}
+        {{end}}
+        
+        {{if .Applications}}
+        <!-- Card View -->
+        <div id="cards-view">
+            {{range $tenant := .Tenants}}
+            {{$apps := $.Applications}}
+            {{$hasApps := false}}
+            {{range $app := $apps}}
+                {{if eq $app.TenantID $tenant.ID}}
+                    {{$hasApps = true}}
+                {{end}}
+            {{end}}
+            {{if $hasApps}}
+            <!-- Tenant Header -->
+            <div class="mb-6">
+                <div class="is-flex is-align-items-center mb-4" style="gap: 0.75rem;">
+                    <span class="icon has-text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                        </svg>
+                    </span>
+                    <h3 class="title is-4 mb-0">{{$tenant.Name}}</h3>
+                    <span class="tag is-dark" style="background-color: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.7);">{{$tenant.APIHostname}}</span>
+                </div>
+                
+                <!-- Application Cards for this Tenant -->
+                <div class="columns is-multiline">
+                    {{range $app := $apps}}
+                    {{if eq $app.TenantID $tenant.ID}}
+                    <div class="column is-one-quarter">
+                        <div class="card is-dark-card app-card">
+                            <a href="/app/{{$app.ID}}" class="app-card-link">
+                                <div class="card-content app-card-content">
+                                    <div class="mb-3">
+                                        {{if eq $app.Type "dmp"}}
+                                        <span class="tag is-info">DMP</span>
+                                        {{else if eq $app.Type "saml"}}
+                                        <span class="tag is-warning">SAML</span>
+                                        {{else if eq $app.Type "oidc"}}
+                                        <span class="tag is-success">OIDC</span>
+                                        {{else}}
+                                        <span class="tag is-primary">WebSDK</span>
+                                        {{end}}
+                                    </div>
+                                    <h2 class="title is-3 app-card-title mb-4">{{$app.Name}}</h2>
+                                    <div class="app-card-meta">
+                                        {{$tenant.Name}}
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    {{end}}
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+            {{end}}
+        </div>
+
+        <!-- List View -->
+        <div class="box" id="list-view" style="display: none;">
+            <div class="table-container">
+                <table class="table is-fullwidth" style="border-collapse: separate; border-spacing: 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Name</th>
+                            <th style="width: 12%;">Type</th>
+                            <th style="width: 20%;">Client ID</th>
+                            <th style="width: 18%;">API Hostname</th>
+                            <th style="width: 10%;">Status</th>
+                            <th style="width: 10%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range $tenant := .Tenants}}
+                        {{$apps := $.Applications}}
+                        <!-- Tenant Header Row -->
+                        <tr class="tenant-row" style="background-color: rgba(72, 95, 199, 0.1); border-top: 2px solid #485fc7;">
+                            <td colspan="6" style="padding: 1rem;">
+                                <div class="is-flex is-align-items-center is-justify-content-space-between">
+                                    <div>
+                                        <span class="icon-text">
+                                            <span class="icon has-text-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                                                </svg>
+                                            </span>
+                                            <span class="has-text-weight-bold is-size-5">{{$tenant.Name}}</span>
+                                        </span>
+                                        <span class="has-text-grey ml-3">{{$tenant.APIHostname}}</span>
+                                    </div>
+                                    <button class="button is-small tenant-toggle" data-tenant-id="{{$tenant.ID}}" title="Collapse/Expand">
+                                        <span class="icon is-small">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="chevron-icon">
+                                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Application Rows for this Tenant -->
+                        {{range $app := $apps}}
+                        {{if eq $app.TenantID $tenant.ID}}
+                        <tr class="app-row tenant-{{$tenant.ID}}-apps" style="background-color: rgba(255, 255, 255, 0.02);">
+                            <td style="padding-left: 3rem;">
+                                <span class="icon-text">
+                                    <span class="icon has-text-grey-light">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 5 7h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 5 3h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="has-text-weight-semibold">{{$app.Name}}</span>
+                                </span>
+                            </td>
+                            <td>
+                                {{if eq $app.Type "dmp"}}
+                                <span class="tag is-info is-light">DMP</span>
+                                {{else if eq $app.Type "saml"}}
+                                <span class="tag is-warning is-light">SAML</span>
+                                {{else if eq $app.Type "oidc"}}
+                                <span class="tag is-success is-light">OIDC</span>
+                                {{else}}
+                                <span class="tag is-primary is-light">WebSDK</span>
+                                {{end}}
+                            </td>
+                            <td>
+                                <code class="is-size-7">{{$app.ClientID}}</code>
+                            </td>
+                            <td class="has-text-grey is-size-7">{{$app.APIHostname}}</td>
+                            <td>
+                                {{if $app.Enabled}}
+                                <span class="tag is-success is-light is-small">Enabled</span>
+                                {{else}}
+                                <span class="tag is-light is-small">Disabled</span>
+                                {{end}}
+                            </td>
+                            <td class="has-text-right">
+                                <a href="/app/{{$app.ID}}" class="button is-small is-primary">
+                                    <span class="icon is-small">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                            <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                        </svg>
+                                    </span>
+                                    <span>Launch</span>
+                                </a>
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{else}}
+        <div class="box has-text-centered empty-state" style="padding: 80px 20px;">
+            <span class="icon is-large has-text-grey-light mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </span>
+            <h3 class="title is-4">No Applications Configured</h3>
+            {{if .HasTenants}}
+            <p class="subtitle is-6 has-text-grey mb-4">You have tenants configured. Click the button above to add your first application.</p>
+            <button type="button" class="button is-success" onclick="document.getElementById('add-app-btn').click()">Add Application</button>
+            {{else}}
+            <p class="subtitle is-6 has-text-grey mb-4">Get started by adding a Duo tenant first, then create applications.</p>
+            <a href="/configure" class="button is-success">Add Tenant</a>
+            {{end}}
+        </div>
+        {{end}}
+    </div>
+</section>
+
+<!-- Add Application Modal -->
+<div class="modal" id="appModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Add Application</p>
+            <button class="delete" aria-label="close" id="app-modal-close-btn"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="app-form">
+                {{if gt (len .Tenants) 1}}
+                <div class="field">
+                    <label class="label" for="app-tenant-select">Select Tenant *</label>
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select id="app-tenant-select" name="tenant_id" required>
+                                <option value="">Choose a tenant...</option>
+                                {{range .Tenants}}
+                                <option value="{{.ID}}">{{.Name}} ({{.APIHostname}})</option>
+                                {{end}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {{else if .Tenants}}
+                <input type="hidden" id="app-tenant-select" name="tenant_id" value="{{(index .Tenants 0).ID}}">
+                <div class="notification is-info is-light mb-4">
+                    <p class="is-size-7">
+                        <strong>Adding application to:</strong> {{(index .Tenants 0).Name}} ({{(index .Tenants 0).APIHostname}})
+                    </p>
+                </div>
+                {{end}}
+                
+                <div class="field">
+                    <label class="label" for="app-name">Application Name *</label>
+                    <div class="control">
+                        <input class="input" type="text" id="app-name" name="name" required placeholder="e.g., WebSDK, Device Portal">
+                    </div>
+                    <p class="help">This will be prefixed with the tenant name</p>
+                </div>
+
+                <div class="field">
+                    <label class="label">Application Type *</label>
+                    <div class="control">
+                        <label class="radio">
+                            <input type="radio" name="app_type" value="websdk" checked>
+                            WebSDK (Universal Prompt)
+                        </label>
+                        <label class="radio ml-4">
+                            <input type="radio" name="app_type" value="dmp">
+                            DMP (Device Management Portal)
+                        </label>
+                        <label class="radio ml-4">
+                            <input type="radio" name="app_type" value="saml">
+                            SAML 2.0 (Single Sign-On)
+                        </label>
+                        <label class="radio ml-4">
+                            <input type="radio" name="app_type" value="oidc">
+                            OIDC (OpenID Connect)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" id="app-enabled" name="enabled" checked>
+                            Enabled
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </section>
+        <footer class="modal-card-foot is-justify-content-flex-end">
+            <button type="button" class="button" id="app-modal-cancel-btn">Cancel</button>
+            <button type="submit" class="button is-success" id="app-submit-btn" form="app-form">Create Application</button>
+        </footer>
+    </div>
+</div>
+
+<script>
+const appModalElement = document.getElementById('appModal');
+const appForm = document.getElementById('app-form');
+const alertContainer = document.getElementById('alert-container');
+const addAppBtn = document.getElementById('add-app-btn');
+
+// View toggle functionality
+const viewToggle = document.getElementById('view-toggle');
+const cardsView = document.getElementById('cards-view');
+const listView = document.getElementById('list-view');
+
+if (viewToggle) {
+    // Load saved preference
+    const savedView = localStorage.getItem('appView') || 'cards';
+    switchView(savedView);
+
+    // Toggle button click handlers
+    viewToggle.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            switchView(view);
+            localStorage.setItem('appView', view);
+        });
+    });
+}
+
+function switchView(view) {
+    if (!viewToggle) return;
+    
+    viewToggle.querySelectorAll('button').forEach(btn => {
+        if (btn.dataset.view === view) {
+            btn.classList.add('is-active');
+        } else {
+            btn.classList.remove('is-active');
+        }
+    });
+
+    if (view === 'cards') {
+        cardsView.style.display = '';
+        listView.style.display = 'none';
+    } else {
+        cardsView.style.display = 'none';
+        listView.style.display = '';
+    }
+}
+
+// Tenant collapse/expand functionality
+document.querySelectorAll('.tenant-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tenantId = btn.dataset.tenantId;
+        const appRows = document.querySelectorAll(`.tenant-${tenantId}-apps`);
+        const chevron = btn.querySelector('.chevron-icon');
+        const isCollapsed = appRows[0]?.style.display === 'none';
+        
+        appRows.forEach(row => {
+            row.style.display = isCollapsed ? '' : 'none';
+        });
+        
+        // Rotate chevron icon
+        if (isCollapsed) {
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            chevron.style.transform = 'rotate(-90deg)';
+        }
+        
+        // Save state to localStorage
+        const collapsedTenants = JSON.parse(localStorage.getItem('collapsedTenants') || '[]');
+        if (isCollapsed) {
+            const index = collapsedTenants.indexOf(tenantId);
+            if (index > -1) collapsedTenants.splice(index, 1);
+        } else {
+            if (!collapsedTenants.includes(tenantId)) {
+                collapsedTenants.push(tenantId);
+            }
+        }
+        localStorage.setItem('collapsedTenants', JSON.stringify(collapsedTenants));
+    });
+});
+
+// Restore collapsed state on page load
+const collapsedTenants = JSON.parse(localStorage.getItem('collapsedTenants') || '[]');
+collapsedTenants.forEach(tenantId => {
+    const appRows = document.querySelectorAll(`.tenant-${tenantId}-apps`);
+    const btn = document.querySelector(`.tenant-toggle[data-tenant-id="${tenantId}"]`);
+    const chevron = btn?.querySelector('.chevron-icon');
+    
+    appRows.forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    if (chevron) {
+        chevron.style.transform = 'rotate(-90deg)';
+    }
+});
+
+if (addAppBtn) {
+    addAppBtn.addEventListener('click', () => {
+        appModalElement.classList.add('is-active');
+        document.getElementById('app-name').focus();
+    });
+}
+
+function showAlert(message, type = 'success') {
+    const typeClass = type === 'success' ? 'is-success' : 'is-danger';
+    alertContainer.innerHTML = `
+        <div class="notification ${typeClass} is-light">
+            <button class="delete"></button>
+            ${message}
+        </div>
+    `;
+    const deleteBtn = alertContainer.querySelector('.delete');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            alertContainer.innerHTML = '';
+        });
+    }
+}
+
+function closeAppModal() {
+    appModalElement.classList.remove('is-active');
+    appForm.reset();
+}
+
+document.getElementById('app-modal-close-btn').addEventListener('click', closeAppModal);
+document.getElementById('app-modal-cancel-btn').addEventListener('click', closeAppModal);
+
+// Close modal when clicking background
+document.querySelector('.modal-background')?.addEventListener('click', closeAppModal);
+
+// App Form Submission
+appForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    
+    const submitBtn = document.getElementById('app-submit-btn');
+    submitBtn.classList.add('is-loading');
+    submitBtn.disabled = true;
+
+    const formData = {
+        name: document.getElementById('app-name').value,
+        type: document.querySelector('input[name="app_type"]:checked').value,
+        enabled: document.getElementById('app-enabled').checked,
+        tenant_id: document.getElementById('app-tenant-select').value,
+    };
+
+    try {
+        const response = await fetch('/api/config/applications/auto-create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showAlert(result.message || 'Application created successfully', 'success');
+            closeAppModal();
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            showAlert(result.error || 'Failed to create application', 'danger');
+        }
+    } catch (error) {
+        showAlert(`An error occurred: ${error.message}`, 'danger');
+    } finally {
+        submitBtn.classList.remove('is-loading');
+        submitBtn.disabled = false;
+    }
+});
+</script>

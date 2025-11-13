@@ -1,0 +1,70 @@
+/* Bulma CSS Variable Overrides for Duo Security Branding */
+
+:root {
+    /* Duo Green Primary Color - #6BBF4E = hsl(102, 46%, 52%) */
+    --bulma-primary-h: 102;
+    --bulma-primary-s: 46%;
+    --bulma-primary-l: 52%;
+    
+    /* Success color also uses Duo green */
+    --bulma-success-h: 102;
+    --bulma-success-s: 46%;
+    --bulma-success-l: 52%;
+    
+    /* Link color adjusted for Duo branding */
+    --bulma-link-h: 102;
+    --bulma-link-s: 46%;
+    --bulma-link-l: 52%;
+
+    /* App card theme tokens */
+    --app-card-bg: #ffffff;
+    --app-card-border: rgba(15, 23, 42, 0.08);
+    --app-card-text: #1f2933;
+    --app-card-title: #111827;
+    --app-card-meta: #6b7280;
+}
+
+/* Dark Theme Implementation - Only applied when data-theme="dark" is set */
+[data-theme="dark"] {
+    /* Scheme colors for dark mode */
+    --bulma-scheme-brightness: dark;
+    --bulma-scheme-main-l: 11%;
+    --bulma-scheme-main-bis-l: 13%;
+    --bulma-scheme-main-ter-l: 15%;
+    
+    /* Background colors */
+    --bulma-background-l: 14%;
+    
+    /* Border colors */
+    --bulma-border-weak-l: 21%;
+    --bulma-border-l: 24%;
+    
+    /* Text colors */
+    --bulma-text-weak-l: 53%;
+    --bulma-text-l: 71%;
+    --bulma-text-strong-l: 93%;
+    --bulma-text-title-l: 100%;
+    
+    /* Hover and active states */
+    --bulma-hover-background-l-delta: 5%;
+    --bulma-active-background-l-delta: 10%;
+    --bulma-hover-border-l-delta: 10%;
+    --bulma-active-border-l-delta: 20%;
+    --bulma-hover-color-l-delta: 5%;
+    --bulma-active-color-l-delta: 10%;
+
+    /* App card theme tokens */
+    --app-card-bg: hsl(200, 11%, 18%);
+    --app-card-border: rgba(148, 163, 184, 0.24);
+    --app-card-text: #e2e8f0;
+    --app-card-title: #f8fafc;
+    --app-card-meta: #94a3b8;
+}
+
+/* Card appearance aligns with theme custom properties */
+.card.is-dark-card {
+    background-color: var(--app-card-bg);
+    border-color: var(--app-card-border);
+    color: var(--app-card-text);
+}
+

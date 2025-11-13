@@ -1,0 +1,493 @@
+/* User Experience Toolkit - Custom Styles for Bulma */
+
+/* ============================================
+   App Card Styles (Home Page)
+   ============================================ */
+
+
+.app-card {
+    transition: border-color 0.2s ease;
+    height: 100%;
+    border: 1px solid var(--app-card-border);
+    padding: 0;
+    background-color: var(--app-card-bg);
+    color: var(--app-card-text);
+}
+
+.app-card-title {
+    color: var(--app-card-title);
+}
+
+.app-card-content {
+    padding: 2.5rem;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.app-card-meta {
+    color: var(--app-card-meta);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+
+.app-card:hover {
+    border-color: hsl(102, 46%, 52%);
+}
+
+.app-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.app-card-link:hover {
+    color: inherit;
+}
+
+/* ============================================
+   Auth Token Display (Success Pages)
+   ============================================ */
+
+.success-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background-color: hsl(102, 46%, 52%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-icon svg {
+    width: 48px;
+    height: 48px;
+    color: white;
+}
+
+.response-card {
+    background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-l));
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+    border-radius: 6px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.response-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+}
+
+.response-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--bulma-text-weak);
+}
+
+.response-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background-color: hsl(102, 46%, 95%);
+    color: hsl(102, 46%, 35%);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .response-tag {
+    background-color: hsl(102, 46%, 20%);
+    color: hsl(102, 46%, 70%);
+}
+
+pre.auth-token {
+    display: block;
+    text-align: left;
+    padding: 1.5rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-bis-l));
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+    font-size: 0.875rem;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    margin: 0;
+}
+
+pre.auth-token code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+}
+
+.success-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .success-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.success-info-item {
+    padding: 1rem;
+    background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-ter-l));
+    border-radius: 6px;
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+}
+
+.success-info-item .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--bulma-text-weak);
+    margin-bottom: 0.5rem;
+}
+
+.success-info-item .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bulma-text-strong);
+}
+
+/* ============================================
+   Monaco Editor Wrapper
+   ============================================ */
+
+.editor-wrapper {
+    background-color: #1e1e1e;
+    border-radius: 6px;
+    padding: 2rem 1rem 1rem 1rem;
+    border: 1px solid #343a40;
+    position: relative;
+}
+
+#monaco-editor-container {
+    height: 640px;
+    width: 100%;
+    max-width: unset;
+    margin: 0;
+    border: none;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    #monaco-editor-container {
+        height: 400px;
+    }
+}
+
+/* ============================================
+   DMP Iframe
+   ============================================ */
+
+#duo_iframe {
+    width: 100%;
+    min-height: 450px;
+}
+
+/* ============================================
+   Config Page - Responsive Table
+   ============================================ */
+
+.config-page .table thead th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Mobile responsive table */
+@media (max-width: 768px) {
+    .config-page .table thead {
+        display: none;
+    }
+
+    .config-page .table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 6px;
+        padding: 1rem;
+        border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+    }
+
+    .config-page .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.35rem 0;
+        border: none;
+    }
+
+    .config-page .table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: 1rem;
+    }
+
+    .config-page .table tbody td:last-child {
+        justify-content: flex-end;
+    }
+}
+
+/* ============================================
+   Empty State Icon
+   ============================================ */
+
+.empty-state svg {
+    opacity: 0.5;
+}
+
+/* ============================================
+   Consistent Border Radius & Minimalist Design
+   ============================================ */
+
+
+.card,
+.box,
+.modal-card,
+.button {
+    border-radius: 6px;
+}
+
+/* Remove all shadows and depth effects for completely flat design */
+.box,
+.card,
+.notification,
+.modal-card,
+.button,
+.dropdown-content,
+.menu-list a,
+.panel,
+.message,
+.navbar,
+.navbar-dropdown,
+.tabs,
+.tag {
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* Ensure no hover shadows on buttons */
+.button:hover,
+.button:focus,
+.button:active {
+    box-shadow: none !important;
+}
+
+.box {
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+}
+
+/* Clean card borders */
+.card {
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+}
+
+/* ============================================
+   Navigation Tabs
+   ============================================ */
+
+.nav-tab {
+    position: relative;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-tab:hover {
+    color: hsl(102, 46%, 52%);
+    background-color: transparent !important;
+}
+
+.nav-tab.is-active {
+    color: hsl(102, 46%, 52%);
+    border-bottom-color: hsl(102, 46%, 52%);
+    background-color: transparent !important;
+}
+
+/* ============================================
+   Smooth Transitions
+   ============================================ */
+
+body,
+.navbar {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   Login Page Split-Screen Layout
+   ============================================ */
+
+.login-split-container {
+    min-height: calc(100vh - 52px); /* Subtract navbar height */
+    display: flex;
+    flex-direction: row;
+}
+
+.login-brand-panel {
+    flex: 0 0 45%;
+    background: linear-gradient(135deg, hsl(102, 46%, 52%) 0%, hsl(102, 46%, 42%) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-brand-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.login-brand-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    max-width: 480px;
+}
+
+.login-brand-content .title {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.login-brand-content .subtitle {
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 1.5rem;
+}
+
+.login-brand-content .tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.login-brand-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-brand-icon svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+.login-form-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-l));
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.login-form-container .box {
+    padding: 2.5rem;
+}
+
+.login-form-container .field:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+.login-form-container .label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.login-form-container .input {
+    height: 3rem;
+    font-size: 1rem;
+}
+
+.login-form-container .button[type="submit"] {
+    height: 3.25rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+/* Dark theme adjustments for login pages */
+[data-theme="dark"] .login-brand-panel {
+    background: linear-gradient(135deg, hsl(102, 46%, 45%) 0%, hsl(102, 46%, 35%) 100%);
+}
+
+[data-theme="dark"] .login-form-panel {
+    background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-l));
+}
+
+/* Responsive layout for mobile */
+@media (max-width: 1023px) {
+    .login-split-container {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .login-brand-panel {
+        flex: 0 0 auto;
+        min-height: 280px;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .login-brand-content .title {
+        font-size: 2rem;
+    }
+
+    .login-brand-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1.5rem;
+    }
+
+    .login-brand-icon svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .login-form-panel {
+        padding: 2rem 1.5rem;
+    }
+
+    .login-form-container .box {
+        padding: 2rem;
+    }
+}
