@@ -5,28 +5,55 @@
 ### Creating a Release
 
 1. **Ensure all changes are committed and pushed to main**
-2. **Create and push a version tag:**
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
+
+2. **Update CHANGELOG.md**
+   - Add a new version section following [Keep a Changelog](https://keepachangelog.com/) format
+   - Use the format: `## [x.y.z] - YYYY-MM-DD`
+   - Categorize changes under: Added, Changed, Deprecated, Removed, Fixed, Security
+
+   Example:
+   ```markdown
+   ## [1.0.4] - 2025-11-14
+
+   ### Added
+   - New authentication flow for SAML
+
+   ### Fixed
+   - Session timeout handling
    ```
 
-3. **Automated actions:**
-   - GitHub Actions builds Docker images (multi-arch)
-   - AI-powered release notes are generated from commits
-   - CHANGELOG.md is automatically updated
-   - GitHub Release is created
+3. **Create a release tag using the validated tag command:**
+   ```bash
+   git tag-release v1.0.4
+   ```
 
-### Changelog Automation
+   This command will:
+   - Verify that CHANGELOG.md contains an entry for version 1.0.4
+   - Create an annotated git tag
+   - Display the push command to use
 
-The repository uses [promptext-notes](https://github.com/1broseidon/promptext-notes) to automatically generate release notes from git commits when you push a version tag. The workflow:
+4. **Push the tag to trigger Docker build:**
+   ```bash
+   git push origin v1.0.4
+   ```
 
-1. Analyzes commits since the previous tag
-2. Uses AI to categorize and describe changes
-3. Updates `CHANGELOG.md` following Keep a Changelog format
-4. Creates a GitHub Release with detailed notes
+5. **Automated actions:**
+   - GitHub Actions builds and pushes Docker images (multi-arch: linux/amd64, linux/arm64)
+   - Images are tagged with version, major.minor, major, and latest
 
-**Configuration:** See `.promptext-notes.yml` for customization of what files are analyzed and how notes are generated.
+### Tag Validation
+
+The `git tag-release` command enforces changelog updates before tagging. If you try to tag without updating the changelog:
+
+```bash
+$ git tag-release v1.0.4
+❌ Error: Version 1.0.4 not found in CHANGELOG.md
+
+Please add a changelog entry for version 1.0.4 before tagging.
+Expected format: ## [1.0.4] - 2025-11-14
+```
+
+This ensures releases are always documented before they're created.
 
 ## Development Setup
 
