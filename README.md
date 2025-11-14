@@ -1,276 +1,362 @@
-# User Experience Toolkit - Go Edition
+# Duo User Experience Toolkit
 
-A modern Golang-based toolkit for Customer Success Engineers to test different Duo Policies using the v4 (Universal Prompt) WebSDK and Device Management Portal.
+[![Go Version](https://img.shields.io/github/go-mod/go-version/1broseidon/duo_uet)](https://github.com/1broseidon/duo_uet)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#docker)
+
+> Self-hosted testing platform for Duo authentication flows with multi-tenant management and modern UI
+
+A toolkit for Customer Success Engineers and technical teams to test and demonstrate Duo authentication policies across multiple integration types: Universal Prompt (WebSDK v4), Device Management Portal, SAML SSO, and OIDC SSO.
 
 ## Features
 
-- **Multi-Application Support** - Configure and manage multiple Duo integrations
-- **WebSDK v4 Universal Prompt** - Test Duo's modern authentication flow
-- **Device Management Portal (DMP)** - Test device management with WebSDK v2 
-- **Web-based Configuration Manager** - Add, edit, and manage applications through an intuitive UI
-- **Dynamic Dashboard** - Automatically displays configured applications
-- **Modern UI** - Built with vanilla HTML/CSS and Bootstrap 5
-
-## Tech Stack
-
-- **Backend**: Go 1.25+ with Fiber v3 framework
-- **Frontend**: Vanilla HTML/CSS with Bootstrap 5
-- **Authentication**: Duo Universal Go SDK
+- **Multi-Tenant Management** - Configure multiple Duo tenants with isolated credentials
+- **Multiple Auth Types** - WebSDK v4, DMP, SAML 2.0, OIDC in one platform
+- **Web Configuration UI** - No manual config file editing required
+- **Auto-Create Applications** - Generate Duo applications via Admin API
+- **Optional Encryption** - AES-256-GCM encryption for config secrets at rest
+- **Modern Design System** - Theme-aware UI with light/dark mode
+- **Docker-First** - Production-ready containerization with multi-arch support
 
 ## Quick Start
 
-### Prerequisites
+### Using Docker (Recommended)
 
-- Go 1.25 or higher
-- Duo account with Web SDK applications configured
-
-### Installation
-
-1. Clone or navigate to the repository:
+**Docker Compose:**
 ```bash
-cd user_experience_toolkit
+# Copy config
+cp config.yaml.example config.yaml
+
+# Edit config.yaml with your Duo credentials, then:
+docker-compose up -d
 ```
 
-2. Install dependencies:
+**Docker Run:**
 ```bash
+docker run -d \
+  --name duo-uet \
+  -p 8080:8080 \
+  -v $(pwd)/config.yaml:/app/config.yaml:ro \
+  -v $(pwd)/certs:/app/certs:ro \
+  ghcr.io/1broseidon/duo_uet:latest
+```
+
+Access at `http://localhost:8080`
+
+### From Source
+
+**Prerequisites:**
+- Go 1.25+
+- Git
+
+**Setup:**
+```bash
+# Clone and install
+git clone https://github.com/1broseidon/duo_uet.git
+cd duo_uet
 go mod download
-```
 
-3. Build the application:
-```bash
+# Build and run
 go build -o uet ./cmd/uet
-```
-
-4. Run the server:
-```bash
 ./uet
 ```
 
-5. Open your browser to [http://localhost:8080](http://localhost:8080)
-
-6. Configure your first Duo application through the web interface at [http://localhost:8080/configure](http://localhost:8080/configure)
+Access at: `http://localhost:8080`
 
 ## Configuration
 
-The toolkit uses a YAML-based configuration file (`config.yaml`) that supports multiple Duo applications. Configuration is best managed through the web interface at [http://localhost:8080/configure](http://localhost:8080/configure).
+### Web UI (Recommended)
 
-### Configuration File Format
+1. Navigate to `http://localhost:8080/configure`
+2. Add a tenant with Admin API credentials
+3. Create applications manually or auto-create from Duo Admin Panel
+4. Applications appear on home dashboard when enabled
+
+### Config File
+
+The toolkit uses `config.yaml` for persistence. Structure:
 
 ```yaml
-applications:
-  - id: "unique-app-id"
-    name: "Production V4"
-    type: "v4"  # or "dmp"
-    enabled: true
-    client_id: "YOUR_CLIENT_ID"
-    client_secret: "YOUR_CLIENT_SECRET"
+# Optional: Encrypt secrets at rest
+encryption_enabled: false
+
+# Multi-tenant support
+tenants:
+  - id: "tenant-1"
+    name: "Production"
     api_hostname: "api-xxxxxxxx.duosecurity.com"
-    # V4-specific fields:
-    redirect_uri: "http://localhost:8080/app/unique-app-id/callback"
-    failmode: "closed"
-    # DMP-specific field (only for type: dmp):
-    akey: "GENERATE_YOUR_OWN_UNIQUE_SECRET_KEY"
+    admin_api_ikey: "DIXXXXXXXXXXXXXXXXXX"
+    admin_api_secret: "your-secret-key"
+
+# Applications auto-managed via UI or Admin API
+applications:
+  - id: "app-1"
+    name: "WebSDK v4 Demo"
+    type: "websdk"
+    tenant_id: "tenant-1"
+    enabled: true
+    client_id: "DIXXXXXXXXXXXXXXXXXX"
+    client_secret: "your-client-secret"
+    # ... type-specific fields
 ```
 
-### Application Types
+See [config.yaml.example](config.yaml.example) for full schema.
 
-**V4 (Universal Prompt)**
-- Required fields: `client_id`, `client_secret`, `api_hostname`, `redirect_uri`, `failmode`
-- The `redirect_uri` must match: `http://localhost:8080/app/{app-id}/callback`
-- `failmode` can be "closed" (secure, default) or "open" (for testing)
+### Encryption (Optional)
 
-**DMP (Device Management Portal)**
-- Required fields: `client_id`, `client_secret`, `api_hostname`, `akey`
-- The `akey` must be at least 40 characters long and randomly generated
+Protect secrets at rest with AES-256-GCM encryption:
 
-### Web-Based Configuration Manager
+```bash
+# Enable in config.yaml
+encryption_enabled: true
 
-1. Navigate to [http://localhost:8080/configure](http://localhost:8080/configure)
-2. Click "Add Application" to create a new Duo integration
-3. Fill in the application details:
-   - **Name**: Descriptive name (e.g., "Production V4")
-   - **Type**: Select "WebSDK V4" or "Device Management Portal"
-   - **Enabled**: Toggle to enable/disable the application
-   - **Credentials**: Enter your Duo application credentials from the Admin Panel
-4. Click "Save Application"
-5. The application will appear on the home dashboard if enabled
+# Provide master key
+export UET_MASTER_KEY="your-secure-password"
 
-### Managing Applications
+# Or use auto-generated key file
+# (creates .uet_key with chmod 600)
+./uet
+```
 
-- **Edit**: Click the "Edit" button to modify an application's settings
-- **Delete**: Click the "Delete" button to remove an application
-- **Enable/Disable**: Toggle the enabled status to show/hide on the dashboard
+See [docs/ENCRYPTION.md](docs/ENCRYPTION.md) for key management and best practices.
 
-## Usage
+## Supported Authentication Types
 
-### Home Dashboard
-The home page dynamically displays all enabled Duo applications. Each card shows:
-- Application name
-- Application type (V4 or DMP)
-- API hostname
+| Type | Description | Use Case |
+|------|-------------|----------|
+| **WebSDK v4** | Universal Prompt | Modern web applications |
+| **DMP** | Device Management Portal | WebSDK v2 with device trust |
+| **SAML 2.0** | Duo SSO SAML | Enterprise SSO integrations |
+| **OIDC** | Duo SSO OpenID Connect | Modern SSO integrations |
 
-### Testing Applications
+Each type includes:
+- Login flow simulation
+- Token/claim inspection
+- Success page with technical details
+- Theme-aware UI
 
-**Universal Prompt (V4)**
-1. Click on a V4 application card from the home page
-2. Enter any username and password
-3. Complete the Duo 2FA prompt
-4. View the authentication response token with user details
+## Architecture
 
-**Device Management Portal (DMP)**
-1. Click on a DMP application card from the home page
-2. Enter any username and password
-3. Complete authentication in the Duo iframe
-4. View success message
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         Frontend                            │
+│  Bulma CSS + Design System + Theme Switcher (Light/Dark)   │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       Go Fiber v3 API                       │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │ Home     │  │ Config   │  │ Auth     │  │ Admin    │   │
+│  │ Handler  │  │ Handler  │  │ Flows    │  │ API      │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Config Management                        │
+│  YAML Storage + Optional AES-256-GCM Encryption             │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Duo Integration                        │
+│  Universal SDK + Admin API + SAML + OIDC Libraries          │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### Managing Applications
-1. Click "Manage Applications" or the gear icon from the home page
-2. View all configured applications in a table
-3. Add, edit, or delete applications as needed
+**Tech Stack:**
+- **Backend:** Go 1.25, Fiber v3
+- **Frontend:** Vanilla JS, Bulma CSS, Custom Design System
+- **Storage:** YAML with optional encryption
+- **Auth:** Duo Universal SDK, SAML 2.0, OIDC
+- **Container:** Docker, Alpine Linux, multi-arch
+
+## Development
+
+### Local Development
+
+```bash
+# Run with auto-reload (requires air)
+go install github.com/cosmtrek/air@latest
+air
+
+# Or standard go run
+go run ./cmd/uet
+```
+
+### Testing
+
+```bash
+# Run all tests
+go test ./...
+
+# With coverage
+go test -cover ./...
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+```
+
+### Code Quality
+
+```bash
+# Format
+go fmt ./...
+
+# Vet
+go vet ./...
+
+# Static analysis (install: go install honnef.co/go/tools/cmd/staticcheck@latest)
+staticcheck ./...
+
+# Cyclomatic complexity (install: go install github.com/fzipp/gocyclo/cmd/gocyclo@latest)
+gocyclo -over 15 .
+```
+
+### Pre-commit Hooks
+
+Automatically runs tests before each commit. To bypass:
+```bash
+git commit --no-verify -m "message"
+```
+
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for development guidelines.
+
+## Docker
+
+### Pre-built Images
+
+Pull and run from GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/1broseidon/duo_uet:latest
+
+docker run -d \
+  --name duo-uet \
+  -p 8080:8080 \
+  -v $(pwd)/config.yaml:/app/config.yaml:ro \
+  ghcr.io/1broseidon/duo_uet:latest
+```
+
+### Build Locally
+
+```bash
+docker build -t duo-uet:local .
+docker run -d -p 8080:8080 -v $(pwd)/config.yaml:/app/config.yaml:ro duo-uet:local
+```
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+services:
+  uet:
+    image: ghcr.io/1broseidon/duo_uet:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./certs:/app/certs:ro
+    environment:
+      UET_MASTER_KEY: ${UET_MASTER_KEY}  # Optional: for encrypted config
+    restart: unless-stopped
+```
+
+### CI/CD
+
+Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
+- `v1.0.0` - Exact version
+- `v1.0`, `v1` - Major/minor aliases
+- `latest` - Latest release
 
 ## Project Structure
 
 ```
 .
-├── cmd/uet/
-│   └── main.go            # Application entry point
+├── cmd/
+│   ├── uet/              # Main application entry point
+│   ├── encrypt-config/   # Config encryption utility
+│   └── samltest/         # SAML testing utility
 ├── internal/
-│   ├── config/
-│   │   └── config.go      # YAML configuration parser
-│   ├── handlers/
-│   │   ├── home.go        # Home page handler
-│   │   ├── v4.go          # Universal Prompt handlers
-│   │   ├── dmp.go         # Device Management Portal handlers
-│   │   └── config.go      # Configuration API handlers
-│   └── websdk2/
-│       └── websdk2.go     # WebSDK v2 signature implementation
-├── templates/
-│   ├── layout.html        # Base layout template
-│   ├── home.html          # Dynamic home dashboard
-│   ├── v4_login.html      # V4 login page
-│   ├── v4_success.html    # V4 success page
-│   ├── dmp_login.html     # DMP login page
-│   ├── dmp_iframe.html    # DMP iframe page
-│   ├── dmp_success.html   # DMP success page
-│   └── configure.html     # Configuration manager UI
+│   ├── config/           # YAML config + encryption
+│   ├── crypto/           # AES-256-GCM encryption
+│   ├── handlers/         # HTTP handlers (home, config, auth flows)
+│   ├── duoadmin/         # Duo Admin API client
+│   ├── websdk2/          # WebSDK v2 signature generation
+│   └── saml/             # SAML request/response handling
+├── templates/            # Go HTML templates
 ├── static/
-│   ├── css/
-│   │   ├── style.css      # Custom styles with modal support
-│   │   └── Duo-Frame.css  # Duo iframe styles
-│   ├── js/
-│   │   ├── Duo-Web-v2.js  # Duo WebSDK v2 JavaScript
-│   │   └── theme.js       # Theme switcher
-│   └── images/
-│       └── logo.png       # Duo logo
-├── config.yaml            # Multi-application configuration
-├── go.mod                 # Go module dependencies
-└── archive/               # Original PHP implementation
+│   ├── css/              # Design system, Bulma overrides
+│   ├── js/               # Theme switcher, Duo WebSDK v2
+│   └── images/           # Duo logo, assets
+├── docs/                 # Documentation
+├── .github/workflows/    # CI/CD pipelines
+└── config.yaml           # Runtime configuration
 ```
 
-## Development
+## Documentation
 
-### Building
+- **[Encryption](docs/ENCRYPTION.md)** - AES-256-GCM config encryption guide
+- **[Contributing](docs/CONTRIBUTING.md)** - Development workflow and standards
+- **[Config Examples](config.yaml.example)** - Full configuration schema
+
+## Security
+
+- **Config Encryption:** Optional AES-256-GCM for secrets at rest
+- **Non-root Container:** Runs as UID 1000 in Docker
+- **Secret Management:** Supports env vars and encrypted config
+- **Pre-commit Tests:** Automated testing before commits
+- **Dependency Updates:** Automated via Dependabot (if configured)
+
+**Reporting vulnerabilities:** Open a GitHub issue or contact the maintainer.
+
+## Common Issues
+
+### Config not loading
 ```bash
-go build -o uet ./cmd/uet
+# Check file exists and is readable
+ls -la config.yaml
+
+# Verify YAML syntax
+cat config.yaml | python -c 'import yaml, sys; yaml.safe_load(sys.stdin)'
 ```
 
-### Running in Development
+### Docker connectivity
 ```bash
-go run ./cmd/uet
+# Verify port isn't in use
+lsof -i :8080
+
+# Check Docker logs
+docker-compose logs -f
 ```
 
-### Running Tests
-```bash
-go test ./...
-```
+### Authentication failures
+- Verify Duo credentials in config
+- Check redirect URI matches exactly
+- Ensure server time is synchronized (JWT validation)
+- Try `failmode: open` for testing
 
-### Pre-commit Hooks
+## Changelog
 
-This project includes a Git pre-commit hook that automatically runs tests before each commit. This ensures code quality and prevents broken code from being committed.
+See [GitHub Releases](https://github.com/1broseidon/duo_uet/releases) for version history.
 
-The hook will:
-- ✅ Run `go test ./...` before every commit
-- ✅ Block the commit if any tests fail
-- ✅ Show clear output about which tests passed/failed
-
-**To bypass the hook** (use sparingly):
-```bash
-git commit --no-verify -m "Your message"
-```
-
-For more development guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Code Quality
-
-Run static analysis tools:
-```bash
-# Format code
-go fmt ./...
-
-# Check for issues
-go vet ./...
-
-# Run staticcheck (install first: go install honnef.co/go/tools/cmd/staticcheck@latest)
-staticcheck ./...
-
-# Check cyclomatic complexity (install first: go install github.com/fzipp/gocyclo/cmd/gocyclo@latest)
-gocyclo -over 15 .
-```
-
-## What's New in v2.0
-
-### Multi-Application Support
-- Manage multiple Duo integrations from a single toolkit instance
-- Dynamic dashboard displays all enabled applications
-- Each application can be independently configured and toggled
-
-### Modern Configuration Management
-- YAML-based configuration for better structure
-- Web-based CRUD interface with modal forms
-- No need to manually edit configuration files
-- Type-specific validation for V4 and DMP applications
-
-### Improved Architecture
-- Cleaner separation of concerns with internal packages
-- Dynamic routing based on application ID
-- Thread-safe configuration updates
-- RESTful API for configuration management
-
-## Migration from v1.x
-
-If you're upgrading from the INI-based configuration:
-
-1. The old `duo.conf` file is no longer used
-2. Start the application - it will create a default `config.yaml`
-3. Use the web interface at `/configure` to add your applications
-4. Each application now has its own ID and can be managed independently
-
-## Troubleshooting
-
-### Configuration Not Loaded
-- Ensure `config.yaml` exists in the application root directory
-- Check file permissions (should be readable/writable by the application)
-- Verify configuration format matches the YAML standard
-- Use the web interface to add applications if the file is empty
-
-### Authentication Failures
-- Verify Duo credentials are correct
-- Check that the redirect URI matches exactly in both the code and Duo Admin Panel
-- Ensure your server's clock is synchronized (JWT validation is time-sensitive)
-- Check the `failmode_v4` setting (set to "open" for testing if Duo is unavailable)
-
-### Session Issues
-- Sessions are stored in-memory by default
-- Restarting the server will clear all sessions
-- For production, consider using Redis or another persistent session store
+**Recent additions:**
+- Docker containerization with multi-arch support
+- GitHub Actions CI/CD for tagged releases
+- Optional AES-256-GCM config encryption
+- Redesigned success page for technical audiences
+- Unified design system with light/dark themes
 
 ## License
 
-This toolkit is provided as-is for testing Duo Security integrations.
+MIT © [Your Name]
 
 ## Support
 
-For issues related to Duo integration, please refer to:
-- [Duo Web SDK Documentation](https://duo.com/docs/duoweb)
-- [Duo Universal Prompt Guide](https://duo.com/docs/duoweb-v4)
+- 🐛 **Issues:** [GitHub Issues](https://github.com/1broseidon/duo_uet/issues)
+- 📖 **Duo Docs:** [duo.com/docs](https://duo.com/docs)
+- 💬 **Questions:** Open a discussion or issue
 
+---
+
+**Built for Customer Success Engineers** | **Powered by Duo Security** | **Go 1.25**
