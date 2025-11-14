@@ -46,10 +46,12 @@ func NewV4HandlerFromApp(app *config.Application, store *session.Store, baseURL 
 
 func (h *V4Handler) Login(c fiber.Ctx) error {
 	return c.Render("login", fiber.Map{
-		"AppType": "v4",
-		"Message": "",
-		"AppName": h.App.Name,
-		"AppID":   h.App.ID,
+		"AppType":        "v4",
+		"Message":        "",
+		"AppName":        h.App.Name,
+		"AppID":          h.App.ID,
+		"APIHostname":    h.App.APIHostname,
+		"IntegrationKey": h.App.ClientID,
 	})
 }
 
@@ -60,20 +62,24 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	// Basic validation
 	if username == "" || password == "" {
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Incorrect username or password",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Incorrect username or password",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
 	// Check if Duo is configured
 	if h.DuoClient == nil {
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Duo is not configured properly.",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Duo is not configured properly.",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -82,10 +88,12 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Duo health check failed: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "2FA Unavailable. Confirm Duo client/secret/host values are correct",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "2FA Unavailable. Confirm Duo client/secret/host values are correct",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -94,10 +102,12 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Failed to generate state: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Failed to generate authentication state",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Failed to generate authentication state",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -106,10 +116,12 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Failed to get session: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Session error",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Session error",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -119,10 +131,12 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	if err := sess.Save(); err != nil {
 		log.Printf("Failed to save session: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Failed to save session",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Failed to save session",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -131,10 +145,12 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Failed to generate auth URL: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Failed to generate authentication URL",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Failed to generate authentication URL",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -155,10 +171,12 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 
 	if code == "" || state == "" {
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Missing authorization code or state",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Missing authorization code or state",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -167,10 +185,12 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Failed to get session: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Session error",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Session error",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -179,20 +199,24 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 
 	if savedState == nil || username == nil {
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "No saved state, please login again",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "No saved state, please login again",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
 	// Verify state matches
 	if state != savedState.(string) {
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Duo state does not match saved state",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Duo state does not match saved state",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 
@@ -201,10 +225,12 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Failed to exchange code: %v", err)
 		return c.Render("login", fiber.Map{
-			"AppType": "v4",
-			"Message": "Error decoding Duo result. Confirm device clock is correct.",
-			"AppName": h.App.Name,
-			"AppID":   h.App.ID,
+			"AppType":        "v4",
+			"Message":        "Error decoding Duo result. Confirm device clock is correct.",
+			"AppName":        h.App.Name,
+			"AppID":          h.App.ID,
+			"APIHostname":    h.App.APIHostname,
+			"IntegrationKey": h.App.ClientID,
 		})
 	}
 

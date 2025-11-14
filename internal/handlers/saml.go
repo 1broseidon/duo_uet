@@ -90,11 +90,13 @@ func (h *SAMLHandler) Login(c fiber.Ctx) error {
 	log.Printf("[SAMLHandler] Rendering login page for app: %s", h.App.Name)
 
 	return c.Render("login", fiber.Map{
-		"AppType":     "saml",
-		"AppID":       h.App.ID,
-		"AppName":     h.App.Name,
-		"EntityID":    h.App.EntityID,
-		"MetadataURL": h.App.MetadataURL,
+		"AppType":        "saml",
+		"AppID":          h.App.ID,
+		"AppName":        h.App.Name,
+		"EntityID":       h.App.EntityID,
+		"MetadataURL":    h.App.MetadataURL,
+		"APIHostname":    h.App.APIHostname,
+		"IntegrationKey": h.App.ClientID,
 	})
 }
 

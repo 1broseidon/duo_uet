@@ -203,6 +203,44 @@ body:has(.auth-split-screen) nav.navbar {
     margin: 0;
 }
 
+/* Admin Panel Link */
+.auth-admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-ter-l));
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--bulma-text);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-xs);
+}
+
+.auth-admin-link:hover {
+    color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.auth-admin-link svg:first-child {
+    opacity: 0.7;
+}
+
+.auth-admin-link svg:last-child {
+    opacity: 0.5;
+    transition: transform var(--transition-fast);
+}
+
+.auth-admin-link:hover svg:last-child {
+    transform: translateX(2px);
+}
+
 .auth-tags {
     display: flex;
     gap: var(--space-2);

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   uet:
     image: ghcr.io/1broseidon/duo_uet:latest

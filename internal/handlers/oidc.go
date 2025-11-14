@@ -94,11 +94,12 @@ func (h *OIDCHandler) Login(c fiber.Ctx) error {
 	log.Printf("[OIDCHandler] Rendering login page for app: %s", h.App.Name)
 
 	return c.Render("login", fiber.Map{
-		"AppType":     "oidc",
-		"AppID":       h.App.ID,
-		"AppName":     h.App.Name,
-		"RedirectURI": h.OAuth2Config.RedirectURL,
-		"ClientID":    h.App.ClientID,
+		"AppType":        "oidc",
+		"AppID":          h.App.ID,
+		"AppName":        h.App.Name,
+		"RedirectURI":    h.OAuth2Config.RedirectURL,
+		"APIHostname":    h.App.APIHostname,
+		"IntegrationKey": h.App.ClientID,
 	})
 }
 

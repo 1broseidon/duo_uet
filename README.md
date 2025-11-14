@@ -220,6 +220,8 @@ Test and demonstrate all major Duo authentication flows:
 | **SAML 2.0** | Duo SSO SAML | Metadata validation, attribute mapping, SSO flows |
 | **OIDC** | Duo SSO OpenID Connect | Token validation, claim inspection, scope testing |
 
+> **Note:** All authentication flows use Duo's latest Universal SDK (WebSDK v4). DMP is simply a specialized configuration for device trust policies.
+
 Each flow provides:
 - Complete authentication simulation
 - Token/claim inspection for validation
@@ -260,7 +262,7 @@ Each flow provides:
 - **Backend:** Go 1.25, Fiber v3
 - **Frontend:** Vanilla JS, Bulma CSS, Custom Design System
 - **Storage:** YAML with optional encryption
-- **Auth:** Duo Universal SDK, SAML 2.0, OIDC
+- **Auth:** Duo Universal SDK (WebSDK v4), SAML 2.0, OIDC
 - **Container:** Docker, Alpine Linux, multi-arch
 
 **Development:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and code quality guidelines.
@@ -309,7 +311,6 @@ Multi-arch support: `linux/amd64`, `linux/arm64`
 │   ├── crypto/           # AES-256-GCM encryption
 │   ├── handlers/         # HTTP handlers (home, config, auth flows)
 │   ├── duoadmin/         # Duo Admin API client
-│   ├── websdk2/          # WebSDK v2 signature generation
 │   └── saml/             # SAML request/response handling
 ├── .github/workflows/    # CI/CD pipelines
 ├── .goreleaser.yml       # Multi-platform build automation
