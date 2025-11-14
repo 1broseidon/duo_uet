@@ -16,8 +16,10 @@ RUN go mod download
 COPY . .
 
 # Build the binary with optimizations
-# CGO_ENABLED=0 for static binary, useful for scratch/distroless images
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+# CGO_ENABLED=0 for static binary, buildx handles GOOS/GOARCH automatically
+ARG TARGETOS
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
     -ldflags="-w -s" \
     -o uet \
     ./cmd/uet

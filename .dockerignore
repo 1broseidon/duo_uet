@@ -9,10 +9,10 @@
 *.swo
 *~
 
-# Build artifacts
-uet
-encrypt-config
-samltest
+# Build artifacts (use leading slash to match only in root, not cmd/ subdirs)
+/uet
+/encrypt-config
+/samltest
 *.exe
 *.dll
 *.so

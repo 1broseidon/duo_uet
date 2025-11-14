@@ -1,5 +1,5 @@
-# Binaries
-uet
+# Binaries (use leading slash to match only root, not cmd/ subdirs)
+/uet
 *.exe
 *.exe~
 *.dll
@@ -43,4 +43,4 @@ archive/
 certs/
 
 # Encryption tool binary
-encrypt-config
+/encrypt-config
