@@ -145,6 +145,18 @@ Priority order for config file resolution:
 2. `/app/config/config.yaml` (Docker default)
 3. `./config.yaml` (local development)
 
+### Admin API Permissions
+
+When creating Admin API credentials in Duo Admin Panel, ensure the following permissions are granted:
+
+![Required Admin API Permissions](docs/screenshots/admin_api_permissions.png)
+
+**Required permissions:**
+- ✅ **Grant read information** - Read account information and statistics
+- ✅ **Grant applications** - Create, modify, and delete applications
+
+These permissions allow the toolkit to validate credentials and auto-provision test applications.
+
 ### Advanced: Manual Configuration
 
 For automation or GitOps workflows, edit `config.yaml` directly:
