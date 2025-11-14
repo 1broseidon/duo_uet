@@ -1,0 +1,52 @@
+# Git and version control
+.git
+.gitignore
+.github
+
+# Development files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Build artifacts
+uet
+encrypt-config
+samltest
+*.exe
+*.dll
+*.so
+*.dylib
+coverage.out
+
+# IDE and editor files
+.vscode
+.idea
+*.iml
+.claude
+
+# Documentation
+README.md
+CONTRIBUTING.md
+AGENTS.md
+docs/
+
+# Archive and backup files
+archive/
+
+# Config files with secrets (users should mount their own)
+config.yaml
+.uet_key
+*.key
+
+# Certificates (users should mount their own)
+certs/
+
+# Encrypted config example (not needed in container)
+config.yaml.encrypted.example
+
+# Test files
+*_test.go
+
+# Module cache (already handled by go mod download)
+vendor/
