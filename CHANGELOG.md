@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-11-14
+
+### Added
+- Collapsible configuration details on login pages (collapsed by default)
+- Integration key extraction from multiple Duo SSO URLs for SAML apps
+- `resolveIntegrationKey()` method for robust SAML integration key detection
+- Unit tests for SAML integration key extraction logic
+
+### Changed
+- Configuration sections now use click-to-expand interaction with chevron indicator
+- SAML certificates stored in single config volume (Docker: `/app/config/certs`, Local: `./certs`)
+- Docker setup consolidated to single `uet-config` volume for all persistent data
+- Docker image reference updated to use `ghcr.io/georgedikeakos/user_experience_toolkit`
+
+### Fixed
+- SAML apps auto-created via Admin API now properly save integration key to ClientID field
+- Admin Panel and Duo Logs links now appear for all SAML applications (new and existing)
+- SAML certificate generation in Docker containers with proper path detection
+- Docker volume permissions for SAML certificates
+- Backward compatibility for existing SAML apps without ClientID populated
+
+### Improved
+- SAML integration key resolution with multiple fallback sources (IDPEntityID, IDPSSOURL, MetadataURL)
+- Docker deployment simplified with single volume mount point
+- Error handling and logging for SAML integration key detection
+
 ## [1.0.3] - 2025-11-14
 
 ### Added
