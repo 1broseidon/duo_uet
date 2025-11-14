@@ -1,0 +1,50 @@
+# Example: Encrypted Configuration File
+# This shows what config.yaml looks like with field-level encryption
+
+# Tenants store Admin API credentials
+tenants:
+  - id: "example-tenant-id"
+    name: "Production"                                    # ✅ VISIBLE - Easy to identify
+    admin_api_key: "DIxxxxxxxxxxxxxxxxxx"                 # ✅ VISIBLE - Not sensitive
+    admin_api_secret: "ENC[AES256_GCM,mtRJc3VzdA==,k8xN2pYQvH9Zx+mLqA...]"  # 🔒 ENCRYPTED
+    api_hostname: "api-12345678.duosecurity.com"          # ✅ VISIBLE - Public info
+
+# Applications reference tenants
+applications:
+  # WebSDK (Universal Prompt) Application
+  - id: "example-websdk-id"
+    tenant_id: "example-tenant-id"                        # ✅ VISIBLE - Reference
+    name: "Production - WebSDK"                           # ✅ VISIBLE - Easy to identify
+    type: "websdk"                                        # ✅ VISIBLE - App type
+    enabled: true                                         # ✅ VISIBLE - Status
+    client_id: "DIxxxxxxxxxxxxxxxxxx"                     # ✅ VISIBLE - Not sensitive
+    client_secret: "ENC[AES256_GCM,YWJjZA==,Xp3lQ8fGh2Jk5Mn7Op...]"  # 🔒 ENCRYPTED
+    api_hostname: "api-12345678.duosecurity.com"          # ✅ VISIBLE - Public info
+
+  # Device Management Portal (DMP) Application
+  - id: "example-dmp-id"
+    tenant_id: "example-tenant-id"
+    name: "Production - DMP"                              # ✅ VISIBLE
+    type: "dmp"                                           # ✅ VISIBLE
+    enabled: true                                         # ✅ VISIBLE
+    client_id: "DIxxxxxxxxxxxxxxxxxx"                     # ✅ VISIBLE
+    client_secret: "ENC[AES256_GCM,ZGVmZw==,QrS9tUvW1xY2z3A4B...]"  # 🔒 ENCRYPTED
+    api_hostname: "api-12345678.duosecurity.com"          # ✅ VISIBLE
+
+  # SAML 2.0 Application
+  - id: "example-saml-id"
+    name: "Production - SAML"                             # ✅ VISIBLE
+    type: "saml"                                          # ✅ VISIBLE
+    enabled: true                                         # ✅ VISIBLE
+    api_hostname: "api-12345678.duosecurity.com"          # ✅ VISIBLE
+    entity_id: "http://localhost:8080/app/example-saml-id/saml"  # ✅ VISIBLE
+    acs_url: "http://localhost:8080/app/example-saml-id/saml/acs"  # ✅ VISIBLE
+    # SAML signing key would be encrypted if present
+    # signing_key: "ENC[AES256_GCM,aGlqaw==,C5D6e7F8g9H0i1J2K3L...]"  # 🔒 ENCRYPTED
+
+# Notice:
+# - You can still see the structure and identify applications
+# - Only sensitive secrets are encrypted (client_secret, admin_api_secret, signing_key)
+# - Public info (hostnames, IDs, types) remains readable
+# - Git diffs will show changes to structure but not secrets
+# - Perfect balance of security and usability!
