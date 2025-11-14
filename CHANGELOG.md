@@ -1,22 +1,11 @@
 # Changelog
 
-
 All notable changes to this project will be documented in this file.
-## [v1.0.1] - 2025-11-14
-
-## [v1.0.1] - 
-
-### Changed
-- **Changelog workflow** - Simplified to use Cerebras only, removing multi-provider support and polish workflow flag.
-
-### Fixed
-- **Docker metadata** - Fixed invalid SHA tag format.
-
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2025-11-14
 
 ### Added
 - Multi-tenant Duo configuration management
@@ -29,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional AES-256-GCM config encryption
 - Docker containerization with multi-arch support (amd64, arm64)
 - GitHub Actions CI/CD pipeline
+- Automated changelog generation with AI (Cerebras)
 - Pre-commit hooks for automated testing
 - Modern design system with light/dark theme
 - Technical details card for authentication results
