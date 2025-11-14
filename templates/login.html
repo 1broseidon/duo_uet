@@ -11,91 +11,43 @@
 })();
 </script>
 
-<div class="auth-split-screen">
-    <!-- Left Brand Panel -->
-    <div class="auth-brand-panel {{.AppType}}">
-        <a href="/" class="auth-back-link auth-back-brand">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
-            </svg>
-            Back to Home
-        </a>
-        <div class="auth-brand-content">
-            <div class="auth-brand-logo">
+<div class="auth-split-screen {{.AppType}}">
+    <!-- Back to Home Link - Fixed Position -->
+    <a href="/" class="auth-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+        </svg>
+        Back to Home
+    </a>
+
+    <!-- Centered Auth Card -->
+    <div class="auth-card">
+        <!-- Card Header -->
+        <div class="auth-card-header">
+            <!-- Logo -->
+            <div class="auth-card-logo">
                 <img src="/static/images/logo.png" alt="Duo Security">
             </div>
-            
+
+            <!-- App Type Badge -->
             {{if eq .AppType "dmp"}}
-                <h1 class="auth-brand-title">Device Management Portal</h1>
-                <p class="auth-brand-subtitle">Validate the self-service Device Management Portal experience against your policies</p>
-                <div class="auth-brand-callouts">
-                    <div class="auth-brand-chip">
-                        Device lifecycle previews
-                    </div>
-                    <div class="auth-brand-chip">
-                        Policy + security checks
-                    </div>
-                </div>
+                <span class="auth-type-badge">Device Management Portal</span>
             {{else if eq .AppType "v4"}}
-                <h1 class="auth-brand-title">Duo WebSDK Universal Prompt</h1>
-                <p class="auth-brand-subtitle">Drive Universal Prompt scenarios and inspect Duo responses returned to your application</p>
-                <div class="auth-brand-callouts">
-                    <div class="auth-brand-chip">
-                        Universal Prompt replay
-                    </div>
-                    <div class="auth-brand-chip">
-                        Raw response visibility
-                    </div>
-                </div>
+                <span class="auth-type-badge">WebSDK Universal Prompt</span>
             {{else if eq .AppType "oidc"}}
-                <h1 class="auth-brand-title">Duo SSO OIDC</h1>
-                <p class="auth-brand-subtitle">Validate OAuth 2.0 / OpenID Connect integrations and review returned tokens and claims</p>
-                <div class="auth-brand-callouts">
-                    <div class="auth-brand-chip">
-                        Token + claim review
-                    </div>
-                    <div class="auth-brand-chip">
-                        Raw response visibility
-                    </div>
-                </div>
+                <span class="auth-type-badge">Duo SSO OIDC</span>
             {{else if eq .AppType "saml"}}
-                <h1 class="auth-brand-title">Duo SSO SAML 2.0</h1>
-                <p class="auth-brand-subtitle">Trigger Duo SSO SAML assertions and examine attributes for claim transformation workflows</p>
-                <div class="auth-brand-callouts">
-                    <div class="auth-brand-chip">
-                        Assertion inspection
-                    </div>
-                    <div class="auth-brand-chip">
-                        Claim transformations
-                    </div>
-                </div>
+                <span class="auth-type-badge">Duo SSO SAML 2.0</span>
+            {{end}}
+
+            <!-- App Name -->
+            {{if .AppName}}
+            <p class="auth-app-name">{{.AppName}}</p>
             {{end}}
         </div>
-    </div>
 
-    <!-- Right Auth Panel -->
-    <div class="auth-form-panel">
-        <div class="auth-form-container">
-            <div class="auth-header">
-                <h1 class="auth-welcome">Welcome Back</h1>
-                <p class="auth-subtitle">Sign in to continue to your account</p>
-                <p class="auth-app-name">{{.AppName}}</p>
-                <div class="auth-tags">
-                    {{if eq .AppType "dmp"}}
-                        <span class="auth-tag">Device Management</span>
-                    {{else if eq .AppType "v4"}}
-                        <span class="auth-tag">WebSDK v4</span>
-                        <span class="auth-tag">Universal Prompt</span>
-                    {{else if eq .AppType "oidc"}}
-                        <span class="auth-tag">OIDC</span>
-                        <span class="auth-tag">OAuth 2.0</span>
-                    {{else if eq .AppType "saml"}}
-                        <span class="auth-tag">SAML 2.0</span>
-                        <span class="auth-tag">SSO</span>
-                    {{end}}
-                </div>
-            </div>
-
+        <!-- Card Body -->
+        <div class="auth-card-body">
             {{if .Message}}
             <div class="auth-message">
                 {{.Message}}
@@ -106,11 +58,11 @@
                 <!-- Form-based Authentication -->
                 <form action="/app/{{.AppID}}" method="post" class="auth-form">
                     <div class="auth-field">
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            class="auth-input" 
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="auth-input"
                             placeholder="Username"
                             autocomplete="username"
                             required
@@ -119,11 +71,11 @@
 
                     <div class="auth-field">
                         <div class="auth-password-wrapper">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                class="auth-input" 
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="auth-input"
                                 placeholder="Password"
                                 autocomplete="current-password"
                                 required
@@ -225,7 +177,7 @@ function togglePassword() {
     const passwordInput = document.getElementById('password');
     const showIcon = document.getElementById('show-password-icon');
     const hideIcon = document.getElementById('hide-password-icon');
-    
+
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         showIcon.style.display = 'none';

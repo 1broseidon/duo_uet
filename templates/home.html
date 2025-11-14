@@ -1,21 +1,4 @@
 <section class="section">
-    <style>
-    .chevron-icon {
-        transition: transform 0.3s ease;
-    }
-    .tenant-row {
-        transition: background-color 0.2s ease;
-    }
-    .tenant-row:hover {
-        background-color: rgba(72, 95, 199, 0.15) !important;
-    }
-    .app-row {
-        transition: background-color 0.2s ease, opacity 0.2s ease;
-    }
-    .app-row:hover {
-        background-color: rgba(255, 255, 255, 0.05) !important;
-    }
-    </style>
     <div class="container">
         <div class="has-text-centered mb-6">
             <h1 class="title is-2">User Experience Toolkit</h1>
@@ -100,13 +83,13 @@
                                 <div class="card-content app-card-content">
                                     <div class="mb-3">
                                         {{if eq $app.Type "dmp"}}
-                                        <span class="tag is-info">DMP</span>
+                                        <span class="tag app-type-tag">DMP</span>
                                         {{else if eq $app.Type "saml"}}
-                                        <span class="tag is-warning">SAML</span>
+                                        <span class="tag app-type-tag">SAML</span>
                                         {{else if eq $app.Type "oidc"}}
-                                        <span class="tag is-success">OIDC</span>
+                                        <span class="tag app-type-tag">OIDC</span>
                                         {{else}}
-                                        <span class="tag is-primary">WebSDK</span>
+                                        <span class="tag app-type-tag">SDK</span>
                                         {{end}}
                                     </div>
                                     <h2 class="title is-3 app-card-title mb-4">{{$app.Name}}</h2>
@@ -126,101 +109,78 @@
         </div>
 
         <!-- List View -->
-        <div class="box" id="list-view" style="display: none;">
-            <div class="table-container">
-                <table class="table is-fullwidth" style="border-collapse: separate; border-spacing: 0;">
-                    <thead>
-                        <tr>
-                            <th style="width: 30%;">Name</th>
-                            <th style="width: 12%;">Type</th>
-                            <th style="width: 20%;">Client ID</th>
-                            <th style="width: 18%;">API Hostname</th>
-                            <th style="width: 10%;">Status</th>
-                            <th style="width: 10%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range $tenant := .Tenants}}
-                        {{$apps := $.Applications}}
-                        <!-- Tenant Header Row -->
-                        <tr class="tenant-row" style="background-color: rgba(72, 95, 199, 0.1); border-top: 2px solid #485fc7;">
-                            <td colspan="6" style="padding: 1rem;">
-                                <div class="is-flex is-align-items-center is-justify-content-space-between">
-                                    <div>
-                                        <span class="icon-text">
-                                            <span class="icon has-text-primary">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
-                                                </svg>
-                                            </span>
-                                            <span class="has-text-weight-bold is-size-5">{{$tenant.Name}}</span>
-                                        </span>
-                                        <span class="has-text-grey ml-3">{{$tenant.APIHostname}}</span>
-                                    </div>
-                                    <button class="button is-small tenant-toggle" data-tenant-id="{{$tenant.ID}}" title="Collapse/Expand">
-                                        <span class="icon is-small">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="chevron-icon">
-                                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                                            </svg>
-                                        </span>
-                                    </button>
+        <div class="box apps-table-container" id="list-view" style="display: none;">
+            <table class="apps-table">
+                <thead>
+                    <tr>
+                        <th class="col-name">Name</th>
+                        <th class="col-type">Type</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range $tenant := .Tenants}}
+                    {{$apps := $.Applications}}
+                    <!-- Tenant Header Row -->
+                    <tr class="tenant-row">
+                        <td colspan="4">
+                            <div class="tenant-header">
+                                <div class="tenant-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                                    </svg>
+                                    <span class="tenant-name">{{$tenant.Name}}</span>
+                                    <span class="tenant-hostname">{{$tenant.APIHostname}}</span>
                                 </div>
-                            </td>
-                        </tr>
-                        <!-- Application Rows for this Tenant -->
-                        {{range $app := $apps}}
-                        {{if eq $app.TenantID $tenant.ID}}
-                        <tr class="app-row tenant-{{$tenant.ID}}-apps" style="background-color: rgba(255, 255, 255, 0.02);">
-                            <td style="padding-left: 3rem;">
-                                <span class="icon-text">
-                                    <span class="icon has-text-grey-light">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 5 7h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 5 3h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
-                                        </svg>
-                                    </span>
-                                    <span class="has-text-weight-semibold">{{$app.Name}}</span>
-                                </span>
-                            </td>
-                            <td>
-                                {{if eq $app.Type "dmp"}}
-                                <span class="tag is-info is-light">DMP</span>
-                                {{else if eq $app.Type "saml"}}
-                                <span class="tag is-warning is-light">SAML</span>
-                                {{else if eq $app.Type "oidc"}}
-                                <span class="tag is-success is-light">OIDC</span>
-                                {{else}}
-                                <span class="tag is-primary is-light">WebSDK</span>
-                                {{end}}
-                            </td>
-                            <td>
-                                <code class="is-size-7">{{$app.ClientID}}</code>
-                            </td>
-                            <td class="has-text-grey is-size-7">{{$app.APIHostname}}</td>
-                            <td>
-                                {{if $app.Enabled}}
-                                <span class="tag is-success is-light is-small">Enabled</span>
-                                {{else}}
-                                <span class="tag is-light is-small">Disabled</span>
-                                {{end}}
-                            </td>
-                            <td class="has-text-right">
-                                <a href="/app/{{$app.ID}}" class="button is-small is-primary">
-                                    <span class="icon is-small">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
-                                            <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
-                                        </svg>
-                                    </span>
-                                    <span>Launch</span>
-                                </a>
-                            </td>
-                        </tr>
-                        {{end}}
-                        {{end}}
-                        {{end}}
-                    </tbody>
-                </table>
-            </div>
+                                <button class="tenant-toggle" data-tenant-id="{{$tenant.ID}}" title="Collapse/Expand">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="chevron-icon">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Application Rows for this Tenant -->
+                    {{range $app := $apps}}
+                    {{if eq $app.TenantID $tenant.ID}}
+                    <tr class="app-row tenant-{{$tenant.ID}}-apps">
+                        <td class="app-name">
+                            {{$app.Name}}
+                        </td>
+                        <td>
+                            {{if eq $app.Type "dmp"}}
+                            <span class="tag app-dmp">DMP</span>
+                            {{else if eq $app.Type "saml"}}
+                            <span class="tag app-saml">SAML</span>
+                            {{else if eq $app.Type "oidc"}}
+                            <span class="tag app-oidc">OIDC</span>
+                            {{else}}
+                            <span class="tag app-websdk">SDK</span>
+                            {{end}}
+                        </td>
+                        <td>
+                            {{if $app.Enabled}}
+                            <span class="tag status-enabled">Enabled</span>
+                            {{else}}
+                            <span class="tag status-disabled">Disabled</span>
+                            {{end}}
+                        </td>
+                        <td class="app-actions">
+                            <a href="/app/{{$app.ID}}" class="button-launch">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                                    <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                                </svg>
+                                <span>Launch</span>
+                            </a>
+                        </td>
+                    </tr>
+                    {{end}}
+                    {{end}}
+                    {{end}}
+                </tbody>
+            </table>
         </div>
         {{else}}
         <div class="box has-text-centered empty-state" style="padding: 80px 20px;">

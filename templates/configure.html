@@ -7,12 +7,7 @@
             </div>
             <div class="buttons">
                 <button type="button" class="button is-success" id="add-tenant-btn">
-                    <span class="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                        </svg>
-                    </span>
-                    <span>Add New Tenant</span>
+                    Add New Tenant
                 </button>
                 <a href="/" class="button">Back to Home</a>
             </div>
@@ -29,50 +24,54 @@
                         <p class="subtitle is-6 has-text-grey mb-0">{{.Tenant.APIHostname}}</p>
                     </div>
                     <div>
-                        <button type="button" class="button is-small is-danger is-outlined delete-tenant-btn" data-tenant-id="{{.Tenant.ID}}" data-tenant-name="{{.Tenant.Name}}">
-                            <span class="icon is-small">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                </svg>
-                            </span>
-                            <span>Delete Tenant</span>
+                        <button type="button" class="button-action is-danger delete-tenant-btn" data-tenant-id="{{.Tenant.ID}}" data-tenant-name="{{.Tenant.Name}}">
+                            Delete Tenant
                         </button>
                     </div>
                 </div>
 
                 {{if .Applications}}
-                <div class="table-container">
-                    <table class="table is-hoverable is-fullwidth">
+                <div class="apps-table-container">
+                    <table class="apps-table">
                         <thead>
                             <tr>
-                                <th>Application Name</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th class="has-text-right">Actions</th>
+                                <th class="col-name">Application Name</th>
+                                <th class="col-type">Type</th>
+                                <th class="col-status">Status</th>
+                                <th class="col-actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {{range .Applications}}
-                            <tr data-app-id="{{.ID}}">
-                                <td class="has-text-weight-semibold" data-label="Name">{{.Name}}</td>
+                            <tr class="app-row" data-app-id="{{.ID}}">
+                                <td class="app-name" data-label="Name">{{.Name}}</td>
                                 <td data-label="Type">
                                     {{$type := .GetApplicationType}}
-                                    <span class="tag {{if eq $type "dmp"}}is-info{{else if eq $type "saml"}}is-warning{{else if eq $type "oidc"}}is-link{{else}}is-primary{{end}}">
-                                        {{if eq $type "dmp"}}DMP{{else if eq $type "saml"}}SAML{{else if eq $type "oidc"}}OIDC{{else}}WebSDK{{end}}
+                                    <span class="tag app-type-tag">
+                                        {{if eq $type "dmp"}}DMP{{else if eq $type "saml"}}SAML{{else if eq $type "oidc"}}OIDC{{else}}SDK{{end}}
                                     </span>
                                 </td>
                                 <td data-label="Status">
                                     {{if .Enabled}}
-                                    <span class="tag is-success">Enabled</span>
+                                    <span class="tag status-enabled">Enabled</span>
                                     {{else}}
-                                    <span class="tag">Disabled</span>
+                                    <span class="tag status-disabled">Disabled</span>
                                     {{end}}
                                 </td>
-                                <td data-label="Actions">
-                                    <div class="buttons is-justify-content-flex-end">
-                                        <button type="button" class="button is-small is-primary is-outlined edit-btn" data-id="{{.ID}}">Edit</button>
-                                        <button type="button" class="button is-small is-danger is-outlined delete-btn" data-id="{{.ID}}">Delete</button>
+                                <td class="app-actions" data-label="Actions">
+                                    <div class="is-flex is-justify-content-flex-end mb-0">
+                                        <div class="action-group">
+                                            <button type="button" class="button-action is-primary is-icon-only edit-btn" data-id="{{.ID}}" title="Edit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" class="button-action is-danger is-icon-only delete-btn" data-id="{{.ID}}" title="Delete">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -238,9 +237,58 @@
     </div>
 </div>
 
+<!-- Delete Application Confirmation Modal -->
+<div class="modal" id="deleteAppModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Delete Application</p>
+            <button class="delete" aria-label="close" id="delete-app-modal-close-btn"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="notification is-danger is-light mb-4">
+                <p class="has-text-weight-semibold mb-2">Warning: This action cannot be undone</p>
+                <p class="is-size-7">Deleting this application will permanently remove it from the system.</p>
+            </div>
+            <p>Are you sure you want to delete the application <strong id="delete-app-name"></strong>?</p>
+            <input type="hidden" id="delete-app-id">
+        </section>
+        <footer class="modal-card-foot is-justify-content-flex-end">
+            <button type="button" class="button" id="delete-app-cancel-btn">Cancel</button>
+            <button type="button" class="button is-danger" id="delete-app-confirm-btn">Delete Application</button>
+        </footer>
+    </div>
+</div>
+
+<!-- Delete Tenant Confirmation Modal -->
+<div class="modal" id="deleteTenantModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Delete Tenant</p>
+            <button class="delete" aria-label="close" id="delete-tenant-modal-close-btn"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="notification is-danger is-light mb-4">
+                <p class="has-text-weight-semibold mb-2">Warning: This action cannot be undone</p>
+                <p class="is-size-7">Deleting this tenant will permanently remove it and all associated applications from the system.</p>
+            </div>
+            <p>Are you sure you want to delete the tenant <strong id="delete-tenant-name-display"></strong>?</p>
+            <p class="mt-3 has-text-grey is-size-7">This will also delete all applications under this tenant.</p>
+            <input type="hidden" id="delete-tenant-id-hidden">
+        </section>
+        <footer class="modal-card-foot is-justify-content-flex-end">
+            <button type="button" class="button" id="delete-tenant-cancel-btn">Cancel</button>
+            <button type="button" class="button is-danger" id="delete-tenant-confirm-btn">Delete Tenant</button>
+        </footer>
+    </div>
+</div>
+
 <script>
 const tenantModalElement = document.getElementById('tenantModal');
 const editAppModalElement = document.getElementById('editAppModal');
+const deleteAppModalElement = document.getElementById('deleteAppModal');
+const deleteTenantModalElement = document.getElementById('deleteTenantModal');
 const tenantForm = document.getElementById('tenant-form');
 const editAppForm = document.getElementById('edit-app-form');
 const alertContainer = document.getElementById('alert-container');
@@ -301,12 +349,40 @@ function closeEditModal() {
     editAppForm.reset();
 }
 
+function openDeleteAppModal(appId, appName) {
+    document.getElementById('delete-app-id').value = appId;
+    document.getElementById('delete-app-name').textContent = appName;
+    deleteAppModalElement.classList.add('is-active');
+}
+
+function closeDeleteAppModal() {
+    deleteAppModalElement.classList.remove('is-active');
+    document.getElementById('delete-app-id').value = '';
+    document.getElementById('delete-app-name').textContent = '';
+}
+
+function openDeleteTenantModal(tenantId, tenantName) {
+    document.getElementById('delete-tenant-id-hidden').value = tenantId;
+    document.getElementById('delete-tenant-name-display').textContent = tenantName;
+    deleteTenantModalElement.classList.add('is-active');
+}
+
+function closeDeleteTenantModal() {
+    deleteTenantModalElement.classList.remove('is-active');
+    document.getElementById('delete-tenant-id-hidden').value = '';
+    document.getElementById('delete-tenant-name-display').textContent = '';
+}
+
 // Event Listeners
 document.getElementById('add-tenant-btn').addEventListener('click', openTenantModal);
 document.getElementById('tenant-modal-close-btn').addEventListener('click', closeTenantModal);
 document.getElementById('tenant-modal-cancel-btn').addEventListener('click', closeTenantModal);
 document.getElementById('edit-modal-close-btn').addEventListener('click', closeEditModal);
 document.getElementById('edit-modal-cancel-btn').addEventListener('click', closeEditModal);
+document.getElementById('delete-app-modal-close-btn').addEventListener('click', closeDeleteAppModal);
+document.getElementById('delete-app-cancel-btn').addEventListener('click', closeDeleteAppModal);
+document.getElementById('delete-tenant-modal-close-btn').addEventListener('click', closeDeleteTenantModal);
+document.getElementById('delete-tenant-cancel-btn').addEventListener('click', closeDeleteTenantModal);
 
 // Close modals when clicking background
 document.querySelectorAll('.modal-background').forEach(bg => {
@@ -314,6 +390,8 @@ document.querySelectorAll('.modal-background').forEach(bg => {
         if (e.target.classList.contains('modal-background')) {
             closeTenantModal();
             closeEditModal();
+            closeDeleteAppModal();
+            closeDeleteTenantModal();
         }
     });
 });
@@ -412,8 +490,9 @@ editAppForm.addEventListener('submit', async (event) => {
 
 // Edit button handler
 document.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('edit-btn')) {
-        const appId = event.target.dataset.id;
+    const editBtn = event.target.closest('.edit-btn');
+    if (editBtn) {
+        const appId = editBtn.dataset.id;
 
         try {
             const response = await fetch('/api/config/applications');
@@ -429,54 +508,82 @@ document.addEventListener('click', async (event) => {
     }
 });
 
-// Delete app button handler
+// Delete app button handler - opens modal
 document.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('delete-btn')) {
-        if (!confirm('Are you sure you want to delete this application?')) {
-            return;
-        }
+    const deleteBtn = event.target.closest('.delete-btn');
+    if (deleteBtn) {
+        const appId = deleteBtn.dataset.id;
 
-        const appId = event.target.dataset.id;
+        // Get app name from the row
+        const row = deleteBtn.closest('tr');
+        const appName = row.querySelector('.app-name').textContent.trim();
 
-        try {
-            const response = await fetch(`/api/config/applications/${appId}`, { method: 'DELETE' });
-            const result = await response.json();
-
-            if (response.ok) {
-                showAlert(result.message || 'Application deleted successfully', 'success');
-                setTimeout(() => window.location.reload(), 800);
-            } else {
-                showAlert(result.error || 'Failed to delete application', 'danger');
-            }
-        } catch (error) {
-            showAlert(`An error occurred: ${error.message}`, 'danger');
-        }
+        openDeleteAppModal(appId, appName);
     }
 });
 
-// Delete tenant button handler
+// Delete app confirmation handler
+document.getElementById('delete-app-confirm-btn').addEventListener('click', async () => {
+    const appId = document.getElementById('delete-app-id').value;
+    const confirmBtn = document.getElementById('delete-app-confirm-btn');
+
+    confirmBtn.classList.add('is-loading');
+    confirmBtn.disabled = true;
+
+    try {
+        const response = await fetch(`/api/config/applications/${appId}`, { method: 'DELETE' });
+        const result = await response.json();
+
+        if (response.ok) {
+            closeDeleteAppModal();
+            showAlert(result.message || 'Application deleted successfully', 'success');
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            showAlert(result.error || 'Failed to delete application', 'danger');
+        }
+    } catch (error) {
+        showAlert(`An error occurred: ${error.message}`, 'danger');
+    } finally {
+        confirmBtn.classList.remove('is-loading');
+        confirmBtn.disabled = false;
+    }
+});
+
+// Delete tenant button handler - opens modal
 document.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('delete-tenant-btn')) {
-        const tenantName = event.target.dataset.tenantName;
-        if (!confirm(`Are you sure you want to delete tenant "${tenantName}"? This will also delete all applications under this tenant.`)) {
-            return;
+    const deleteTenantBtn = event.target.closest('.delete-tenant-btn');
+    if (deleteTenantBtn) {
+        const tenantId = deleteTenantBtn.dataset.tenantId;
+        const tenantName = deleteTenantBtn.dataset.tenantName;
+
+        openDeleteTenantModal(tenantId, tenantName);
+    }
+});
+
+// Delete tenant confirmation handler
+document.getElementById('delete-tenant-confirm-btn').addEventListener('click', async () => {
+    const tenantId = document.getElementById('delete-tenant-id-hidden').value;
+    const confirmBtn = document.getElementById('delete-tenant-confirm-btn');
+
+    confirmBtn.classList.add('is-loading');
+    confirmBtn.disabled = true;
+
+    try {
+        const response = await fetch(`/api/config/tenants/${tenantId}`, { method: 'DELETE' });
+        const result = await response.json();
+
+        if (response.ok) {
+            closeDeleteTenantModal();
+            showAlert(result.message || 'Tenant deleted successfully', 'success');
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            showAlert(result.error || 'Failed to delete tenant', 'danger');
         }
-
-        const tenantId = event.target.dataset.tenantId;
-
-        try {
-            const response = await fetch(`/api/config/tenants/${tenantId}`, { method: 'DELETE' });
-            const result = await response.json();
-
-            if (response.ok) {
-                showAlert(result.message || 'Tenant deleted successfully', 'success');
-                setTimeout(() => window.location.reload(), 800);
-            } else {
-                showAlert(result.error || 'Failed to delete tenant', 'danger');
-            }
-        } catch (error) {
-            showAlert(`An error occurred: ${error.message}`, 'danger');
-        }
+    } catch (error) {
+        showAlert(`An error occurred: ${error.message}`, 'danger');
+    } finally {
+        confirmBtn.classList.remove('is-loading');
+        confirmBtn.disabled = false;
     }
 });
 </script>

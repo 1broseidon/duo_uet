@@ -1,0 +1,315 @@
+/* ============================================
+   User Experience Toolkit - Design System
+   Unified design tokens and CSS custom properties
+   ============================================ */
+
+:root {
+    /* ============================================
+       SPACING SCALE (8px base unit)
+       ============================================ */
+    --space-0: 0;
+    --space-1: 0.5rem;   /* 8px */
+    --space-2: 1rem;     /* 16px */
+    --space-3: 1.5rem;   /* 24px */
+    --space-4: 2rem;     /* 32px */
+    --space-5: 2.5rem;   /* 40px */
+    --space-6: 3rem;     /* 48px */
+    --space-8: 4rem;     /* 64px */
+    --space-10: 5rem;    /* 80px */
+
+    /* ============================================
+       BORDER RADIUS (consistent across all components)
+       ============================================ */
+    --radius-sm: 6px;    /* Tags, chips, small elements */
+    --radius-md: 8px;    /* Cards, buttons, inputs */
+    --radius-lg: 12px;   /* Modals, large containers */
+    --radius-xl: 16px;   /* Hero sections */
+    --radius-full: 9999px; /* Pills, circles */
+
+    /* ============================================
+       SHADOWS (3-level system)
+       ============================================ */
+    --shadow-none: none;
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+
+    /* ============================================
+       TRANSITIONS (consistent timing)
+       ============================================ */
+    --transition-fast: 150ms ease-out;
+    --transition-base: 200ms ease-out;
+    --transition-slow: 300ms ease-out;
+    --transition-slower: 400ms ease-out;
+
+    /* Cubic bezier for smooth, natural motion */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+    /* ============================================
+       TYPOGRAPHY SCALE
+       ============================================ */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-serif: Georgia, 'Times New Roman', serif;
+    --font-mono: "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    /* Font sizes - clear hierarchy */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-lg: 1.125rem;   /* 18px */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+    --text-5xl: 3rem;      /* 48px */
+    --text-6xl: 3.75rem;   /* 60px */
+
+    /* Font weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Line heights */
+    --leading-none: 1;
+    --leading-tight: 1.2;
+    --leading-snug: 1.4;
+    --leading-normal: 1.6;
+    --leading-relaxed: 1.75;
+
+    /* Letter spacing */
+    --tracking-tighter: -0.03em;
+    --tracking-tight: -0.02em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.02em;
+    --tracking-wider: 0.05em;
+
+    /* ============================================
+       BRAND COLORS (Duo Green)
+       ============================================ */
+    --brand-primary: hsl(102, 46%, 52%);
+    --brand-primary-dark: hsl(102, 46%, 42%);
+    --brand-primary-light: hsl(102, 46%, 62%);
+    --brand-primary-lighter: hsl(102, 46%, 72%);
+    --brand-primary-lightest: hsl(102, 46%, 95%);
+
+    /* Brand gradient - single unified gradient */
+    --brand-gradient: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+
+    /* Gradient with subtle glow overlay */
+    --brand-gradient-enhanced: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+
+    /* ============================================
+       SEMANTIC COLORS (app type indicators)
+       ============================================ */
+    --color-websdk: hsl(102, 46%, 52%);    /* Duo Green */
+    --color-dmp: hsl(230, 55%, 65%);       /* Soft Blue */
+    --color-saml: hsl(38, 92%, 50%);       /* Amber */
+    --color-oidc: hsl(158, 64%, 52%);      /* Teal */
+
+    /* ============================================
+       NEUTRAL COLORS (light theme)
+       ============================================ */
+    --gray-50: hsl(210, 20%, 98%);
+    --gray-100: hsl(220, 14%, 96%);
+    --gray-200: hsl(220, 13%, 91%);
+    --gray-300: hsl(216, 12%, 84%);
+    --gray-400: hsl(218, 11%, 65%);
+    --gray-500: hsl(220, 9%, 46%);
+    --gray-600: hsl(215, 14%, 34%);
+    --gray-700: hsl(217, 19%, 27%);
+    --gray-800: hsl(215, 28%, 17%);
+    --gray-900: hsl(221, 39%, 11%);
+
+    /* ============================================
+       Z-INDEX SCALE (organized layers)
+       ============================================ */
+    --z-base: 0;
+    --z-dropdown: 1000;
+    --z-sticky: 1100;
+    --z-fixed: 1200;
+    --z-modal-backdrop: 1300;
+    --z-modal: 1400;
+    --z-popover: 1500;
+    --z-tooltip: 1600;
+}
+
+/* ============================================
+   DARK THEME ADJUSTMENTS
+   ============================================ */
+[data-theme="dark"] {
+    /* Shadow adjustments for dark mode */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.5);
+
+    /* Dark mode neutral colors */
+    --gray-50: hsl(220, 11%, 11%);
+    --gray-100: hsl(218, 11%, 15%);
+    --gray-200: hsl(216, 11%, 20%);
+    --gray-300: hsl(215, 11%, 28%);
+    --gray-400: hsl(215, 12%, 42%);
+    --gray-500: hsl(215, 10%, 55%);
+    --gray-600: hsl(215, 12%, 68%);
+    --gray-700: hsl(215, 14%, 78%);
+    --gray-800: hsl(216, 15%, 88%);
+    --gray-900: hsl(210, 20%, 98%);
+}
+
+/* ============================================
+   TYPOGRAPHY REFINEMENTS
+   ============================================ */
+body {
+    font-family: var(--font-sans);
+    font-weight: var(--font-normal);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+}
+
+/* Headings get tighter spacing for polish */
+h1, h2, h3, h4, h5, h6,
+.title {
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    font-weight: var(--font-semibold);
+}
+
+/* Large headings need even tighter tracking */
+.title.is-1,
+.title.is-2,
+h1 {
+    letter-spacing: var(--tracking-tighter);
+}
+
+/* Small text needs wider tracking for legibility */
+.is-size-7,
+.help,
+small,
+.tag {
+    letter-spacing: var(--tracking-wide);
+}
+
+/* Code blocks */
+code,
+pre,
+.code {
+    font-family: var(--font-mono);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Spacing utilities */
+.space-y-1 > * + * { margin-top: var(--space-1); }
+.space-y-2 > * + * { margin-top: var(--space-2); }
+.space-y-3 > * + * { margin-top: var(--space-3); }
+.space-y-4 > * + * { margin-top: var(--space-4); }
+.space-y-6 > * + * { margin-top: var(--space-6); }
+
+/* Shadow utilities */
+.shadow-none { box-shadow: var(--shadow-none) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+/* Transition utilities */
+.transition-fast { transition: all var(--transition-fast); }
+.transition-base { transition: all var(--transition-base); }
+.transition-slow { transition: all var(--transition-slow); }
+
+/* Focus states for accessibility */
+.focus-ring:focus,
+.focus-ring:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   GLOBAL COMPONENT CONSISTENCY
+   ============================================ */
+
+/* Apply consistent border radius */
+.card,
+.box,
+.modal-card-head,
+.modal-card-foot {
+    border-radius: var(--radius-md);
+}
+
+.button {
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+.tag {
+    border-radius: var(--radius-sm);
+}
+
+.input,
+.textarea,
+.select select {
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+}
+
+/* Consistent focus states */
+.button:focus-visible,
+.input:focus,
+.textarea:focus,
+.select select:focus {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+}
+
+/* Interactive state improvements */
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+/* Card hover states */
+.card {
+    transition: all var(--transition-base);
+}
+
+.box {
+    box-shadow: var(--shadow-sm);
+    border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
+}
+
+/* ============================================
+   APP TYPE TAG COLORS (semantic and consistent)
+   ============================================ */
+.tag.app-websdk {
+    background-color: var(--color-websdk);
+    color: white;
+    font-weight: var(--font-medium);
+}
+
+.tag.app-dmp {
+    background-color: var(--color-dmp);
+    color: white;
+    font-weight: var(--font-medium);
+}
+
+.tag.app-saml {
+    background-color: var(--color-saml);
+    color: white;
+    font-weight: var(--font-medium);
+}
+
+.tag.app-oidc {
+    background-color: var(--color-oidc);
+    color: white;
+    font-weight: var(--font-medium);
+}

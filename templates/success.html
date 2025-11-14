@@ -1,113 +1,138 @@
-<section class="section">
+<section class="section success-page {{.AppType}}">
     <div class="container">
         <div class="success-container">
-            <div class="has-text-centered mb-6">
+            <!-- Success Header with Icon -->
+            <div class="success-header">
                 <div class="success-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                     </svg>
                 </div>
-                <h1 class="title is-2 mb-2">Authentication Successful</h1>
-                <p class="subtitle is-5 has-text-grey mb-1">{{.AppName}}</p>
-                <div class="mt-4">
-                    {{if eq .AppType "dmp"}}
-                        <span class="tag is-success is-light">Device Management Portal</span>
-                    {{else if eq .AppType "v4"}}
-                        <span class="tag is-success is-light">WebSDK v4</span>
-                        <span class="tag is-light">Universal Prompt</span>
-                    {{else if eq .AppType "oidc"}}
-                        <span class="tag is-success is-light">OpenID Connect</span>
-                        <span class="tag is-light">OAuth 2.0</span>
-                    {{else if eq .AppType "saml"}}
-                        <span class="tag is-success is-light">SAML 2.0</span>
-                        <span class="tag is-light">Single Sign-On</span>
-                    {{end}}
-                </div>
-            </div>
 
-            <div class="success-info-grid">
-                {{if eq .AppType "dmp"}}
-                    <div class="success-info-item">
-                        <div class="label">Status</div>
-                        <div class="value">✓ Authenticated</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Portal Access</div>
-                        <div class="value">Device Management</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Session</div>
-                        <div class="value">Active</div>
-                    </div>
-                {{else if eq .AppType "v4"}}
-                    <div class="success-info-item">
-                        <div class="label">User</div>
-                        <div class="value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Auth Factor</div>
-                        <div class="value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}2FA{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Result</div>
-                        <div class="value">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</div>
-                    </div>
-                {{else if eq .AppType "oidc"}}
-                    <div class="success-info-item">
-                        <div class="label">User</div>
-                        <div class="value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Auth Method</div>
-                        <div class="value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}OpenID Connect{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Result</div>
-                        <div class="value">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</div>
-                    </div>
-                {{else if eq .AppType "saml"}}
-                    <div class="success-info-item">
-                        <div class="label">User</div>
-                        <div class="value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Auth Method</div>
-                        <div class="value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}SAML 2.0{{end}}</div>
-                    </div>
-                    <div class="success-info-item">
-                        <div class="label">Result</div>
-                        <div class="value">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</div>
-                    </div>
+                <h1 class="success-title">Authentication Successful</h1>
+
+                {{if .AppName}}
+                <p class="success-app-name">{{.AppName}}</p>
                 {{end}}
             </div>
 
-            <div class="response-card">
-                <div class="response-header">
-                    {{if eq .AppType "dmp"}}
-                        <span class="response-label">Duo API Response</span>
-                    {{else if eq .AppType "v4"}}
-                        <span class="response-label">Duo API Response</span>
-                    {{else if eq .AppType "oidc"}}
-                        <span class="response-label">ID Token Claims</span>
-                    {{else if eq .AppType "saml"}}
-                        <span class="response-label">SAML Assertion Data</span>
-                    {{end}}
-                    <span class="response-tag">JSON</span>
-                </div>
-                <pre class="auth-token"><code>{{if .TokenData}}{{.TokenData}}{{else}}{
+            <!-- Technical Details Card -->
+            <div class="success-details-card">
+                {{if eq .AppType "dmp"}}
+                    <div class="success-detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value">Authenticated</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Portal</span>
+                        <span class="detail-value">Device Management</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Session</span>
+                        <span class="detail-value">Active</span>
+                    </div>
+                {{else if eq .AppType "v4"}}
+                    <div class="success-detail-row">
+                        <span class="detail-label">User</span>
+                        <span class="detail-value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Auth Factor</span>
+                        <span class="detail-value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}2FA{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Result</span>
+                        <span class="detail-value success">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</span>
+                    </div>
+                {{else if eq .AppType "oidc"}}
+                    <div class="success-detail-row">
+                        <span class="detail-label">User</span>
+                        <span class="detail-value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Auth Method</span>
+                        <span class="detail-value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}OpenID Connect{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Result</span>
+                        <span class="detail-value success">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</span>
+                    </div>
+                {{else if eq .AppType "saml"}}
+                    <div class="success-detail-row">
+                        <span class="detail-label">User</span>
+                        <span class="detail-value">{{if .UserEmail}}{{.UserEmail}}{{else}}Authenticated{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Auth Method</span>
+                        <span class="detail-value">{{if .AuthFactor}}{{.AuthFactor}}{{else}}SAML 2.0{{end}}</span>
+                    </div>
+                    <div class="success-detail-row">
+                        <span class="detail-label">Result</span>
+                        <span class="detail-value success">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</span>
+                    </div>
+                {{end}}
+
+                <!-- Collapsible Token Claims Row -->
+                <button class="success-detail-row success-detail-toggle" onclick="toggleResponse()">
+                    <div class="detail-toggle-left">
+                        <span class="detail-label">
+                            {{if eq .AppType "dmp"}}
+                                API Response
+                            {{else if eq .AppType "v4"}}
+                                API Response
+                            {{else if eq .AppType "oidc"}}
+                                ID Token Claims
+                            {{else if eq .AppType "saml"}}
+                                SAML Assertion
+                            {{end}}
+                        </span>
+                        <span class="detail-tag">JSON</span>
+                    </div>
+                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </button>
+                <div class="detail-content" id="responseContent">
+                    <pre class="auth-token"><code>{{if .TokenData}}{{.TokenData}}{{else}}{
   "message": "No data available"
 }{{end}}</code></pre>
+                </div>
             </div>
 
-            <div class="buttons is-centered">
-                <a href="/app/{{.AppID}}" class="button is-success is-medium">Test Again</a>
-                <a href="/" class="button is-medium">← Back to Home</a>
+            <!-- Action Buttons -->
+            <div class="success-actions">
+                <div class="action-group">
+                    <a href="/" class="button-action is-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="/app/{{.AppID}}" class="button-action is-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                        </svg>
+                        Test Again
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
+<script>
+function toggleResponse() {
+    const content = document.getElementById('responseContent');
+    const button = document.querySelector('.success-detail-toggle');
+    const chevron = button.querySelector('.chevron-icon');
 
-
-
-
+    if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        chevron.style.transform = 'rotate(0deg)';
+    } else {
+        content.classList.add('expanded');
+        chevron.style.transform = 'rotate(180deg)';
+    }
+}
+</script>

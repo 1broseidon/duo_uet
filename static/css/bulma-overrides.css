@@ -5,23 +5,43 @@
     --bulma-primary-h: 102;
     --bulma-primary-s: 46%;
     --bulma-primary-l: 52%;
-    
+
     /* Success color also uses Duo green */
     --bulma-success-h: 102;
     --bulma-success-s: 46%;
     --bulma-success-l: 52%;
-    
+
     /* Link color adjusted for Duo branding */
     --bulma-link-h: 102;
     --bulma-link-s: 46%;
     --bulma-link-l: 52%;
 
+    /* Light mode: subtle gray background with white cards */
+    --bulma-scheme-main-l: 98%;
+    --bulma-background-l: 96%;
+
     /* App card theme tokens */
     --app-card-bg: #ffffff;
-    --app-card-border: rgba(15, 23, 42, 0.08);
+    --app-card-border: rgba(15, 23, 42, 0.12);
     --app-card-text: #1f2933;
     --app-card-title: #111827;
-    --app-card-meta: #6b7280;
+    --app-card-meta: #52525b;
+
+    /* Table-specific light mode colors */
+    --table-header-bg: hsl(0, 0%, 97%);
+    --table-tenant-bg: hsl(0, 0%, 98%);
+    --table-row-hover: hsl(0, 0%, 96%);
+    --table-border: rgba(0, 0, 0, 0.08);
+
+    /* Tag colors */
+    --tag-bg: hsl(0, 0%, 95%);
+    --tag-border: hsl(0, 0%, 85%);
+    --tag-text: hsl(0, 0%, 25%);
+
+    /* Status tag colors */
+    --status-enabled-bg: rgba(107, 191, 78, 0.15);
+    --status-enabled-border: rgba(107, 191, 78, 0.3);
+    --status-enabled-text: hsl(102, 46%, 35%);
 }
 
 /* Dark Theme Implementation - Only applied when data-theme="dark" is set */
@@ -31,20 +51,20 @@
     --bulma-scheme-main-l: 11%;
     --bulma-scheme-main-bis-l: 13%;
     --bulma-scheme-main-ter-l: 15%;
-    
+
     /* Background colors */
     --bulma-background-l: 14%;
-    
+
     /* Border colors */
     --bulma-border-weak-l: 21%;
     --bulma-border-l: 24%;
-    
+
     /* Text colors */
     --bulma-text-weak-l: 53%;
     --bulma-text-l: 71%;
     --bulma-text-strong-l: 93%;
     --bulma-text-title-l: 100%;
-    
+
     /* Hover and active states */
     --bulma-hover-background-l-delta: 5%;
     --bulma-active-background-l-delta: 10%;
@@ -59,6 +79,22 @@
     --app-card-text: #e2e8f0;
     --app-card-title: #f8fafc;
     --app-card-meta: #94a3b8;
+
+    /* Table-specific dark mode colors */
+    --table-header-bg: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 15%);
+    --table-tenant-bg: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 15%);
+    --table-row-hover: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 17%);
+    --table-border: rgba(255, 255, 255, 0.08);
+
+    /* Tag colors */
+    --tag-bg: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 20%);
+    --tag-border: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 30%);
+    --tag-text: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 80%);
+
+    /* Status tag colors */
+    --status-enabled-bg: rgba(107, 191, 78, 0.15);
+    --status-enabled-border: rgba(107, 191, 78, 0.4);
+    --status-enabled-text: hsl(102, 46%, 70%);
 }
 
 /* Card appearance aligns with theme custom properties */
