@@ -27,7 +27,7 @@ Open `http://localhost:8080/configure` to add your Duo Admin API credentials and
 <details>
 <summary><strong>Alternative: Docker Compose</strong></summary>
 
-For production deployments with managed volumes:
+For persistent test environments:
 
 ```bash
 docker compose up -d
@@ -70,10 +70,10 @@ Config appears at `./duo-config/config.yaml`
 - Compare behavior across WebSDK versions and SSO protocols
 
 **For Technical Teams:**
-- Integration testing for Duo authentication workflows
-- CI/CD pipeline validation with automated auth testing
+- Test authentication integration before customer deployments
 - Training environment for new team members
-- Policy impact analysis before production rollout
+- Policy impact analysis and validation
+- Troubleshoot authentication issues in isolation
 
 **For Security Teams:**
 - Audit authentication behavior across different configurations
@@ -159,7 +159,7 @@ These permissions allow the toolkit to validate credentials and auto-provision t
 
 ### Advanced: Manual Configuration
 
-For automation or GitOps workflows, edit `config.yaml` directly:
+Edit `config.yaml` directly:
 
 ```yaml
 encryption_enabled: false  # Optional: Enable AES-256-GCM encryption
@@ -183,9 +183,9 @@ applications:
 
 Full schema: [config.yaml.example](config.yaml.example)
 
-### Security: Config Encryption
+### Optional: Config Encryption
 
-Protect secrets at rest with AES-256-GCM encryption:
+For sensitive test environments, enable AES-256-GCM encryption:
 
 ```bash
 # Enable encryption in config.yaml
@@ -198,20 +198,24 @@ export UET_MASTER_KEY="your-secure-password"
 ./uet
 ```
 
+**Note:** This toolkit is designed for testing and demonstration. For production Duo deployments, use Duo's production-grade integrations directly.
+
 ## Supported Authentication Types
 
-| Type | Description | Use Case |
-|------|-------------|----------|
-| **WebSDK v4** | Universal Prompt | Modern web applications |
-| **DMP** | Device Management Portal | WebSDK v2 with device trust |
-| **SAML 2.0** | Duo SSO SAML | Enterprise SSO integrations |
-| **OIDC** | Duo SSO OpenID Connect | Modern SSO integrations |
+Test and demonstrate all major Duo authentication flows:
 
-Each type includes:
-- Login flow simulation
-- Token/claim inspection
-- Success page with technical details
-- Theme-aware UI
+| Type | Description | Testing Focus |
+|------|-------------|---------------|
+| **WebSDK v4** | Universal Prompt | Policy behavior, MFA methods, device trust |
+| **DMP** | Device Management Portal | Device health checks, trusted endpoints |
+| **SAML 2.0** | Duo SSO SAML | Metadata validation, attribute mapping, SSO flows |
+| **OIDC** | Duo SSO OpenID Connect | Token validation, claim inspection, scope testing |
+
+Each flow provides:
+- Complete authentication simulation
+- Token/claim inspection for validation
+- Technical details for troubleshooting
+- Side-by-side policy comparison
 
 ## Architecture
 
@@ -359,15 +363,19 @@ Multi-arch support: `linux/amd64`, `linux/arm64`
 - **[Contributing](CONTRIBUTING.md)** - Development workflow and standards
 - **[Config Examples](config.yaml.example)** - Full configuration schema
 
-## Security
+## Security Considerations
 
+This toolkit is designed for **testing and demonstration purposes** in non-production environments.
+
+**Security features for test environments:**
 - **Config Encryption:** Optional AES-256-GCM for secrets at rest
 - **Non-root Container:** Runs as UID 1000 in Docker
-- **Secret Management:** Supports env vars and encrypted config
-- **Pre-commit Tests:** Automated testing before commits
-- **Dependency Updates:** Automated via Dependabot (if configured)
+- **Secret Management:** Supports environment variables
+- **Volume Isolation:** Docker volumes keep credentials separate from host
 
-**Reporting vulnerabilities:** Open a GitHub issue or contact the maintainer.
+**Important:** Use dedicated test credentials and non-production Duo environments. For production Duo deployments, implement Duo's SDKs and integrations directly in your applications.
+
+**Reporting vulnerabilities:** Open a GitHub issue.
 
 ## Common Issues
 
