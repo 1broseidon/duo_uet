@@ -96,6 +96,7 @@ func (h *SAMLHandler) Login(c fiber.Ctx) error {
 		"EntityID":       h.App.EntityID,
 		"MetadataURL":    h.App.MetadataURL,
 		"APIHostname":    h.App.APIHostname,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
 		"IntegrationKey": h.App.ClientID,
 	})
 }
@@ -310,6 +311,8 @@ func (h *SAMLHandler) Success(c fiber.Ctx) error {
 		"AuthResult":     "success",
 		"TokenData":      string(responseJSON),
 		"AttributesJSON": string(responseJSON),
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
+		"IntegrationKey": h.App.ClientID,
 	})
 }
 

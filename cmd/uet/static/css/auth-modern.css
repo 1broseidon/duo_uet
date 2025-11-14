@@ -203,13 +203,20 @@ body:has(.auth-split-screen) nav.navbar {
     margin: 0;
 }
 
-/* Admin Panel Link */
-.auth-admin-link {
-    display: inline-flex;
+/* Admin Action Buttons - Two-button layout */
+.auth-admin-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.auth-admin-button {
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2);
-    margin-top: var(--space-3);
-    padding: var(--space-2) var(--space-4);
+    padding: var(--space-3) var(--space-4);
     background: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-ter-l));
     border: 1px solid hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-border-l));
     border-radius: var(--radius-md);
@@ -219,26 +226,25 @@ body:has(.auth-split-screen) nav.navbar {
     font-weight: var(--font-medium);
     transition: all var(--transition-base);
     box-shadow: var(--shadow-xs);
+    white-space: nowrap;
 }
 
-.auth-admin-link:hover {
+.auth-admin-button:hover {
     color: var(--brand-primary);
     border-color: var(--brand-primary);
+    background: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), calc(var(--bulma-scheme-main-ter-l) - 2%));
     box-shadow: var(--shadow-sm);
     transform: translateY(-1px);
 }
 
-.auth-admin-link svg:first-child {
+.auth-admin-button svg {
+    flex-shrink: 0;
     opacity: 0.7;
+    transition: opacity var(--transition-fast);
 }
 
-.auth-admin-link svg:last-child {
-    opacity: 0.5;
-    transition: transform var(--transition-fast);
-}
-
-.auth-admin-link:hover svg:last-child {
-    transform: translateX(2px);
+.auth-admin-button:hover svg {
+    opacity: 1;
 }
 
 .auth-tags {

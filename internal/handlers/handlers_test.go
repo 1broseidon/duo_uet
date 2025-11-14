@@ -33,7 +33,6 @@ func TestNewConfigHandler(t *testing.T) {
 	}
 }
 
-
 func TestNewV4HandlerFromApp(t *testing.T) {
 	tests := []struct {
 		name             string

@@ -51,6 +51,7 @@ func (h *V4Handler) Login(c fiber.Ctx) error {
 		"AppName":        h.App.Name,
 		"AppID":          h.App.ID,
 		"APIHostname":    h.App.APIHostname,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
 		"IntegrationKey": h.App.ClientID,
 	})
 }
@@ -67,6 +68,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -79,6 +81,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -93,6 +96,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -107,6 +111,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -121,6 +126,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -136,6 +142,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -150,6 +157,7 @@ func (h *V4Handler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -176,6 +184,7 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -190,6 +199,7 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -204,6 +214,7 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -216,6 +227,7 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -230,6 +242,7 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -280,15 +293,17 @@ func (h *V4Handler) Callback(c fiber.Ctx) error {
 	sess.Save()
 
 	return c.Render("success", fiber.Map{
-		"AppType":      "v4",
-		"TokenData":    string(tokenJSON),
-		"AppName":      h.App.Name,
-		"AppID":        h.App.ID,
-		"AuthResult":   authResult,
-		"AuthStatus":   authStatus,
-		"AuthFactor":   authFactor,
-		"UserEmail":    userEmail,
-		"AuthDevice":   authDevice,
-		"AuthLocation": authLocation,
+		"AppType":        "v4",
+		"TokenData":      string(tokenJSON),
+		"AppName":        h.App.Name,
+		"AppID":          h.App.ID,
+		"AuthResult":     authResult,
+		"AuthStatus":     authStatus,
+		"AuthFactor":     authFactor,
+		"UserEmail":      userEmail,
+		"AuthDevice":     authDevice,
+		"AuthLocation":   authLocation,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
+		"IntegrationKey": h.App.ClientID,
 	})
 }

@@ -44,7 +44,7 @@ func TestGenerateSelfSignedCert(t *testing.T) {
 
 	// Verify it's valid for 10 years
 	duration := cert.NotAfter.Sub(cert.NotBefore)
-	expectedDuration := 10 * 365 * 24 * 60 * 60 // 10 years in seconds
+	expectedDuration := 10 * 365 * 24 * 60 * 60          // 10 years in seconds
 	if int(duration.Seconds()) < expectedDuration-3600 { // Allow 1 hour variance
 		t.Errorf("Certificate validity period is too short: %v", duration)
 	}

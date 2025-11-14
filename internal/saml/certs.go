@@ -170,4 +170,3 @@ func KeyToPEM(key *rsa.PrivateKey) string {
 		Bytes: x509.MarshalPKCS1PrivateKey(key),
 	}))
 }
-

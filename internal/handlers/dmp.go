@@ -56,6 +56,7 @@ func (h *DMPHandler) Login(c fiber.Ctx) error {
 		"AppName":        h.App.Name,
 		"AppID":          h.App.ID,
 		"APIHostname":    h.App.APIHostname,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
 		"IntegrationKey": h.App.ClientID,
 	})
 }
@@ -72,6 +73,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -84,6 +86,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -98,6 +101,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -112,6 +116,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -126,6 +131,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -141,6 +147,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -155,6 +162,7 @@ func (h *DMPHandler) ProcessLogin(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -181,6 +189,7 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -195,6 +204,7 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -209,6 +219,7 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -221,6 +232,7 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -235,6 +247,7 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 			"AppName":        h.App.Name,
 			"AppID":          h.App.ID,
 			"APIHostname":    h.App.APIHostname,
+			"AdminHostname":  getAdminHostname(h.App.APIHostname),
 			"IntegrationKey": h.App.ClientID,
 		})
 	}
@@ -251,9 +264,11 @@ func (h *DMPHandler) Callback(c fiber.Ctx) error {
 	sess.Save()
 
 	return c.Render("success", fiber.Map{
-		"AppType":   "dmp",
-		"TokenData": string(tokenJSON),
-		"AppName":   h.App.Name,
-		"AppID":     h.App.ID,
+		"AppType":        "dmp",
+		"TokenData":      string(tokenJSON),
+		"AppName":        h.App.Name,
+		"AppID":          h.App.ID,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
+		"IntegrationKey": h.App.ClientID,
 	})
 }

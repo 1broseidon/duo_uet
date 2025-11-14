@@ -99,6 +99,7 @@ func (h *OIDCHandler) Login(c fiber.Ctx) error {
 		"AppName":        h.App.Name,
 		"RedirectURI":    h.OAuth2Config.RedirectURL,
 		"APIHostname":    h.App.APIHostname,
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
 		"IntegrationKey": h.App.ClientID,
 	})
 }
@@ -351,14 +352,16 @@ func (h *OIDCHandler) Success(c fiber.Ctx) error {
 	responseJSON, _ := json.MarshalIndent(responseData, "", "  ")
 
 	return c.Render("success", fiber.Map{
-		"AppType":    "oidc",
-		"AppID":      h.App.ID,
-		"AppName":    h.App.Name,
-		"UserEmail":  userEmail,
-		"AuthFactor": "OpenID Connect",
-		"AuthResult": "success",
-		"TokenData":  string(responseJSON),
-		"ClaimsJSON": string(responseJSON),
+		"AppType":        "oidc",
+		"AppID":          h.App.ID,
+		"AppName":        h.App.Name,
+		"UserEmail":      userEmail,
+		"AuthFactor":     "OpenID Connect",
+		"AuthResult":     "success",
+		"TokenData":      string(responseJSON),
+		"ClaimsJSON":     string(responseJSON),
+		"AdminHostname":  getAdminHostname(h.App.APIHostname),
+		"IntegrationKey": h.App.ClientID,
 	})
 }
 

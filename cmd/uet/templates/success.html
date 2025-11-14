@@ -1,6 +1,7 @@
 <section class="section success-page {{.AppType}}">
-    <div class="container">
-        <div class="success-container">
+    <div class="success-split-layout">
+        <!-- Left Side: Success Info & Stats (2/3) -->
+        <div class="success-main">
             <!-- Success Header with Icon -->
             <div class="success-header">
                 <div class="success-icon">
@@ -71,68 +72,66 @@
                         <span class="detail-value success">{{if .AuthResult}}{{.AuthResult}}{{else}}success{{end}}</span>
                     </div>
                 {{end}}
-
-                <!-- Collapsible Token Claims Row -->
-                <button class="success-detail-row success-detail-toggle" onclick="toggleResponse()">
-                    <div class="detail-toggle-left">
-                        <span class="detail-label">
-                            {{if eq .AppType "dmp"}}
-                                API Response
-                            {{else if eq .AppType "v4"}}
-                                API Response
-                            {{else if eq .AppType "oidc"}}
-                                ID Token Claims
-                            {{else if eq .AppType "saml"}}
-                                SAML Assertion
-                            {{end}}
-                        </span>
-                        <span class="detail-tag">JSON</span>
-                    </div>
-                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                    </svg>
-                </button>
-                <div class="detail-content" id="responseContent">
-                    <pre class="auth-token"><code>{{if .TokenData}}{{.TokenData}}{{else}}{
-  "message": "No data available"
-}{{end}}</code></pre>
-                </div>
             </div>
+
+            <!-- Admin Action Buttons -->
+            {{if and .AdminHostname .IntegrationKey}}
+            <div class="success-admin-buttons">
+                <a href="https://{{.AdminHostname}}/applications/{{.IntegrationKey}}" target="_blank" class="success-admin-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                    </svg>
+                    Admin Panel
+                </a>
+                <a href="https://{{.AdminHostname}}/logs?ikey={{.IntegrationKey}}&timeRange=24h" target="_blank" class="success-admin-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z"/>
+                        <path d="M9 9H5v1h4V9z"/>
+                    </svg>
+                    Duo Logs
+                </a>
+            </div>
+            {{end}}
 
             <!-- Action Buttons -->
             <div class="success-actions">
-                <div class="action-group">
-                    <a href="/" class="button-action is-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
-                        </svg>
-                        Home
-                    </a>
-                    <a href="/app/{{.AppID}}" class="button-action is-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                            <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
-                        </svg>
-                        Test Again
-                    </a>
-                </div>
+                <a href="/" class="button-action is-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+                    </svg>
+                    Home
+                </a>
+                <a href="/app/{{.AppID}}" class="button-action is-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                        <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                    </svg>
+                    Test Again
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Side: API Response (1/3) -->
+        <div class="success-sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">
+                    {{if eq .AppType "dmp"}}
+                        API Response
+                    {{else if eq .AppType "v4"}}
+                        API Response
+                    {{else if eq .AppType "oidc"}}
+                        ID Token Claims
+                    {{else if eq .AppType "saml"}}
+                        SAML Assertion
+                    {{end}}
+                </h3>
+                <span class="sidebar-badge">JSON</span>
+            </div>
+            <div class="sidebar-content">
+                <pre class="auth-token"><code>{{if .TokenData}}{{.TokenData}}{{else}}{
+  "message": "No data available"
+}{{end}}</code></pre>
             </div>
         </div>
     </div>
 </section>
-
-<script>
-function toggleResponse() {
-    const content = document.getElementById('responseContent');
-    const button = document.querySelector('.success-detail-toggle');
-    const chevron = button.querySelector('.chevron-icon');
-
-    if (content.classList.contains('expanded')) {
-        content.classList.remove('expanded');
-        chevron.style.transform = 'rotate(0deg)';
-    } else {
-        content.classList.add('expanded');
-        chevron.style.transform = 'rotate(180deg)';
-    }
-}
-</script>

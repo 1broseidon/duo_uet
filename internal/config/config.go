@@ -46,13 +46,13 @@ type Application struct {
 	IDPCertificate string `yaml:"idp_certificate,omitempty" json:"idp_certificate,omitempty"`
 
 	// OIDC-specific fields (Relying Party)
-	RedirectURI               string `yaml:"redirect_uri,omitempty" json:"redirect_uri,omitempty"`
-	IDPDiscoveryURL           string `yaml:"idp_discovery_url,omitempty" json:"idp_discovery_url,omitempty"`
-	IDPIssuer                 string `yaml:"idp_issuer,omitempty" json:"idp_issuer,omitempty"`
-	IDPAuthorizationEndpoint  string `yaml:"idp_authorization_endpoint,omitempty" json:"idp_authorization_endpoint,omitempty"`
-	IDPTokenEndpoint          string `yaml:"idp_token_endpoint,omitempty" json:"idp_token_endpoint,omitempty"`
-	IDPUserInfoEndpoint       string `yaml:"idp_userinfo_endpoint,omitempty" json:"idp_userinfo_endpoint,omitempty"`
-	IDPJWKSEndpoint           string `yaml:"idp_jwks_endpoint,omitempty" json:"idp_jwks_endpoint,omitempty"`
+	RedirectURI              string `yaml:"redirect_uri,omitempty" json:"redirect_uri,omitempty"`
+	IDPDiscoveryURL          string `yaml:"idp_discovery_url,omitempty" json:"idp_discovery_url,omitempty"`
+	IDPIssuer                string `yaml:"idp_issuer,omitempty" json:"idp_issuer,omitempty"`
+	IDPAuthorizationEndpoint string `yaml:"idp_authorization_endpoint,omitempty" json:"idp_authorization_endpoint,omitempty"`
+	IDPTokenEndpoint         string `yaml:"idp_token_endpoint,omitempty" json:"idp_token_endpoint,omitempty"`
+	IDPUserInfoEndpoint      string `yaml:"idp_userinfo_endpoint,omitempty" json:"idp_userinfo_endpoint,omitempty"`
+	IDPJWKSEndpoint          string `yaml:"idp_jwks_endpoint,omitempty" json:"idp_jwks_endpoint,omitempty"`
 }
 
 // Config represents the entire configuration file
@@ -77,7 +77,7 @@ func LoadConfig(cfgPath string) (*Config, error) {
 				Applications: []Application{},
 				Tenants:      []Tenant{},
 			}
-			
+
 			// Try to create the parent directory if it doesn't exist
 			dir := filepath.Dir(cfgPath)
 			if dir != "" && dir != "." {
@@ -85,12 +85,12 @@ func LoadConfig(cfgPath string) (*Config, error) {
 					return nil, fmt.Errorf("failed to create config directory: %v", err)
 				}
 			}
-			
+
 			// Persist the empty config immediately
 			if err := config.Save(); err != nil {
 				return nil, fmt.Errorf("failed to create initial config file: %v", err)
 			}
-			
+
 			return config, nil
 		}
 		return nil, fmt.Errorf("failed to read config file: %v", err)
