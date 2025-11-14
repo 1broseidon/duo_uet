@@ -1,7 +1,35 @@
 # Duo User Experience Toolkit Configuration
 # This file stores your Duo tenants and applications
-# The applications are managed from the web interface using the Admin API. 
+# The applications are managed from the web interface using the Admin API.
 # YOU DO NOT NEED TO MANUALLY CREATE THEM HERE (unless you want to)
+
+# ===== ENCRYPTION CONFIGURATION =====
+# Optional: Enable encryption for sensitive fields (client_secret, admin_api_secret, signing_key)
+# When enabled, secrets are encrypted at rest using AES-256-GCM encryption
+#
+# Default: false (disabled - secrets stored in plaintext)
+#
+# To enable encryption:
+#   1. Set encryption_enabled: true
+#   2. Provide a master key via environment variable: export UET_MASTER_KEY="your-secure-password"
+#      OR let the app auto-generate a .uet_key file (chmod 600, add to .gitignore)
+#   3. Run: ./encrypt-config config.yaml  (to encrypt existing plaintext secrets)
+#
+# When encryption is enabled:
+#   ✅ Secrets are encrypted in config.yaml (not readable)
+#   ✅ Structure remains visible (names, IDs, types)
+#   ✅ Automatic encryption on save, decryption on load
+#   ✅ Backward compatible (plaintext secrets work during migration)
+#
+# Security Notes:
+#   - Add .uet_key to .gitignore if using auto-generated key
+#   - Use strong password (20+ characters) for UET_MASTER_KEY
+#   - Different keys for different environments (dev/prod)
+#   - See docs/ENCRYPTION.md for details
+#
+# encryption_enabled: false  # Default: secrets stored in plaintext
+# encryption_enabled: true   # Enable: secrets encrypted with AES-256-GCM
+# ====================================
 
 # Tenants store Admin API credentials once and can have multiple applications
 tenants:

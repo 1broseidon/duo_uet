@@ -5,6 +5,8 @@ import (
 	"os"
 	"sync"
 
+	"user_experience_toolkit/internal/crypto"
+
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 )
@@ -54,10 +56,12 @@ type Application struct {
 
 // Config represents the entire configuration file
 type Config struct {
-	Tenants      []Tenant      `yaml:"tenants,omitempty" json:"tenants,omitempty"`
-	Applications []Application `yaml:"applications" json:"applications"`
-	mu           sync.RWMutex  `yaml:"-" json:"-"`
-	filepath     string        `yaml:"-" json:"-"`
+	EncryptionEnabled bool          `yaml:"encryption_enabled,omitempty" json:"encryption_enabled,omitempty"`
+	Tenants           []Tenant      `yaml:"tenants,omitempty" json:"tenants,omitempty"`
+	Applications      []Application `yaml:"applications" json:"applications"`
+	mu                sync.RWMutex  `yaml:"-" json:"-"`
+	filepath          string        `yaml:"-" json:"-"`
+	cryptoManager     interface{}   `yaml:"-" json:"-"` // *crypto.CryptoManager (interface to avoid import cycle)
 }
 
 // LoadConfig loads and parses the YAML configuration file
@@ -87,6 +91,44 @@ func LoadConfig(filepath string) (*Config, error) {
 		}
 	}
 
+	// Initialize crypto manager and decrypt secrets if encryption is enabled
+	if config.EncryptionEnabled {
+		cm, err := crypto.NewCryptoManager()
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize encryption: %w", err)
+		}
+		config.cryptoManager = cm
+
+		// Decrypt tenant secrets
+		for i := range config.Tenants {
+			if config.Tenants[i].AdminAPISecret != "" {
+				decrypted, err := cm.Decrypt(config.Tenants[i].AdminAPISecret)
+				if err != nil {
+					return nil, fmt.Errorf("failed to decrypt tenant %s admin_api_secret: %w", config.Tenants[i].ID, err)
+				}
+				config.Tenants[i].AdminAPISecret = decrypted
+			}
+		}
+
+		// Decrypt application secrets
+		for i := range config.Applications {
+			if config.Applications[i].ClientSecret != "" {
+				decrypted, err := cm.Decrypt(config.Applications[i].ClientSecret)
+				if err != nil {
+					return nil, fmt.Errorf("failed to decrypt application %s client_secret: %w", config.Applications[i].ID, err)
+				}
+				config.Applications[i].ClientSecret = decrypted
+			}
+			if config.Applications[i].SigningKey != "" {
+				decrypted, err := cm.Decrypt(config.Applications[i].SigningKey)
+				if err != nil {
+					return nil, fmt.Errorf("failed to decrypt application %s signing_key: %w", config.Applications[i].ID, err)
+				}
+				config.Applications[i].SigningKey = decrypted
+			}
+		}
+	}
+
 	return config, nil
 }
 
@@ -95,7 +137,55 @@ func (c *Config) Save() error {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	data, err := yaml.Marshal(c)
+	// Create a copy for saving (to encrypt secrets without modifying in-memory config)
+	configToSave := &Config{
+		EncryptionEnabled: c.EncryptionEnabled,
+		Tenants:           make([]Tenant, len(c.Tenants)),
+		Applications:      make([]Application, len(c.Applications)),
+		filepath:          c.filepath,
+	}
+
+	// Deep copy tenants
+	copy(configToSave.Tenants, c.Tenants)
+
+	// Deep copy applications
+	copy(configToSave.Applications, c.Applications)
+
+	// Encrypt secrets if encryption is enabled
+	if c.EncryptionEnabled && c.cryptoManager != nil {
+		cm := c.cryptoManager.(*crypto.CryptoManager)
+
+		// Encrypt tenant secrets
+		for i := range configToSave.Tenants {
+			if configToSave.Tenants[i].AdminAPISecret != "" {
+				encrypted, err := cm.Encrypt(configToSave.Tenants[i].AdminAPISecret)
+				if err != nil {
+					return fmt.Errorf("failed to encrypt tenant %s admin_api_secret: %w", configToSave.Tenants[i].ID, err)
+				}
+				configToSave.Tenants[i].AdminAPISecret = encrypted
+			}
+		}
+
+		// Encrypt application secrets
+		for i := range configToSave.Applications {
+			if configToSave.Applications[i].ClientSecret != "" {
+				encrypted, err := cm.Encrypt(configToSave.Applications[i].ClientSecret)
+				if err != nil {
+					return fmt.Errorf("failed to encrypt application %s client_secret: %w", configToSave.Applications[i].ID, err)
+				}
+				configToSave.Applications[i].ClientSecret = encrypted
+			}
+			if configToSave.Applications[i].SigningKey != "" {
+				encrypted, err := cm.Encrypt(configToSave.Applications[i].SigningKey)
+				if err != nil {
+					return fmt.Errorf("failed to encrypt application %s signing_key: %w", configToSave.Applications[i].ID, err)
+				}
+				configToSave.Applications[i].SigningKey = encrypted
+			}
+		}
+	}
+
+	data, err := yaml.Marshal(configToSave)
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %v", err)
 	}

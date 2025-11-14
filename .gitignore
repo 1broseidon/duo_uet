@@ -32,8 +32,15 @@ Thumbs.db
 # Configuration files with secrets
 config.yaml
 
+# Encryption keys (NEVER commit these!)
+.uet_key
+*.key
+
 # Archive files
 archive/
 
 # Certs files
 certs/
+
+# Encryption tool binary
+encrypt-config
