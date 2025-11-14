@@ -1,17 +1,24 @@
 package main
 
 import (
+	"embed"
 	"html/template"
 	"io"
 	"log"
+	"path/filepath"
 	"strings"
 	"user_experience_toolkit/internal/config"
 	"user_experience_toolkit/internal/handlers"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/session"
-	"github.com/gofiber/fiber/v3/middleware/static"
 )
+
+//go:embed static
+var staticFS embed.FS
+
+//go:embed templates
+var templatesFS embed.FS
 
 const (
 	configPath = "config.yaml"
@@ -35,8 +42,21 @@ func main() {
 	// Setup session store
 	store := session.NewStore()
 
-	// Setup static files
-	app.Use("/static", static.New("./static"))
+	// Setup static files from embedded filesystem
+	app.Get("/static/*", func(c fiber.Ctx) error {
+		// Get the requested file path
+		filePath := "static/" + c.Params("*")
+
+		// Read the file from embedded FS
+		data, err := staticFS.ReadFile(filePath)
+		if err != nil {
+			return c.Status(fiber.StatusNotFound).SendString("File not found")
+		}
+
+		// Set content type based on file extension
+		c.Set("Content-Type", getContentType(filePath))
+		return c.Send(data)
+	})
 
 	// Initialize handlers
 	homeHandler := handlers.NewHomeHandler(cfg)
@@ -213,14 +233,14 @@ func (e *templateEngine) Load() error {
 }
 
 func (e *templateEngine) Render(w io.Writer, name string, bind any, layout ...string) error {
-	// Parse layout template
-	layoutTmpl, err := template.ParseFiles("templates/layout.html")
+	// Parse layout template from embedded filesystem
+	layoutTmpl, err := template.ParseFS(templatesFS, "templates/layout.html")
 	if err != nil {
 		return err
 	}
 
-	// Parse content template
-	contentTmpl, err := template.ParseFiles("templates/" + name + ".html")
+	// Parse content template from embedded filesystem
+	contentTmpl, err := template.ParseFS(templatesFS, "templates/"+name+".html")
 	if err != nil {
 		return err
 	}
@@ -238,4 +258,35 @@ func (e *templateEngine) Render(w io.Writer, name string, bind any, layout ...st
 
 	// Execute layout template with embedded content
 	return layoutTmpl.Execute(w, data)
+}
+
+// getContentType returns the MIME type based on file extension
+func getContentType(path string) string {
+	ext := filepath.Ext(path)
+	switch ext {
+	case ".css":
+		return "text/css"
+	case ".js":
+		return "application/javascript"
+	case ".png":
+		return "image/png"
+	case ".jpg", ".jpeg":
+		return "image/jpeg"
+	case ".gif":
+		return "image/gif"
+	case ".svg":
+		return "image/svg+xml"
+	case ".html":
+		return "text/html"
+	case ".json":
+		return "application/json"
+	case ".woff":
+		return "font/woff"
+	case ".woff2":
+		return "font/woff2"
+	case ".ttf":
+		return "font/ttf"
+	default:
+		return "application/octet-stream"
+	}
 }
