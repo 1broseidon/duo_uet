@@ -1,18 +1,18 @@
 services:
   uet:
-    image: ghcr.io/1broseidon/duo_uet:latest
+    # image: ghcr.io/1broseidon/duo_uet:latest
     # Or build locally:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     volumes:
       # Mount persistent config directory (config.yaml will be auto-created)
       - uet-config:/app/config
 
-      # Mount certs directory if needed for SAML
-      - ./certs:/app/certs:ro
+      # Mount certs directory for SAML (needs write access for auto-generation)
+      - uet-certs:/app/certs
 
       # Optional: Mount encryption key if using encrypted config
       # - ./.uet_key:/app/.uet_key:ro
@@ -36,6 +36,8 @@ services:
 # Named volumes for persistent storage
 volumes:
   uet-config:
+    driver: local
+  uet-certs:
     driver: local
 
 # Optional: Add networks if integrating with other services
