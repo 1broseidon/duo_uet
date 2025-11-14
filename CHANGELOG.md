@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2025-11-14
+
+### Added
+- Auto-config generation: `config.yaml` created automatically on first run
+- `UET_CONFIG_PATH` environment variable for custom config locations
+- Smart config path detection (Docker vs local environment)
+- Dashboard screenshot in README
+- Use cases section for different user personas (CSE, Technical, Security teams)
+- Enhanced troubleshooting documentation
+- Collapsible deployment alternatives in README
+
+### Changed
+- Docker setup now uses named volumes by default for better security
+- Config file location priority: `UET_CONFIG_PATH` → `/app/config/config.yaml` → `./config.yaml`
+- Improved README structure with visual flow diagram
+- Simplified Quick Start to single command
+- Enhanced "How It Works" section with configuration flow
+
+### Fixed
+- Config save failures when parent directory doesn't exist
+- Empty config initialization now includes proper array fields
+
 ## [1.0.1] - 2025-11-14
 
 ### Added
