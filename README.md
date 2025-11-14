@@ -28,7 +28,7 @@ A toolkit for Customer Success Engineers and technical teams to test and demonst
 cp config.yaml.example config.yaml
 
 # Edit config.yaml with your Duo credentials, then:
-docker-compose up -d
+docker compose up -d
 ```
 
 **Docker Run:**
@@ -327,7 +327,7 @@ cat config.yaml | python -c 'import yaml, sys; yaml.safe_load(sys.stdin)'
 lsof -i :8080
 
 # Check Docker logs
-docker-compose logs -f
+docker compose logs -f
 ```
 
 ### Authentication failures
