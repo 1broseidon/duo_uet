@@ -239,10 +239,12 @@ func (h *ConfigHandler) AutoCreateApplication(c fiber.Ctx) error {
 		log.Printf("[ConfigHandler] SAML integration created successfully")
 
 		// Extract IDP metadata from the API response
+		integrationKey := samlIntegration.IntegrationKey
 		idpEntityID := samlIntegration.SSO.IDPMetadata.EntityID
 		idpSSOURL := samlIntegration.SSO.IDPMetadata.SSOURL
 		idpCertificate := samlIntegration.SSO.IDPMetadata.Cert
 
+		log.Printf("[ConfigHandler] Integration Key: %s", integrationKey)
 		log.Printf("[ConfigHandler] IDP Entity ID: %s", idpEntityID)
 		log.Printf("[ConfigHandler] IDP SSO URL: %s", idpSSOURL)
 		log.Printf("[ConfigHandler] IDP Certificate length: %d bytes", len(idpCertificate))
@@ -254,6 +256,7 @@ func (h *ConfigHandler) AutoCreateApplication(c fiber.Ctx) error {
 			Name:        fullAppName,
 			Type:        "saml",
 			Enabled:     req.Enabled,
+			ClientID:    integrationKey,
 			APIHostname: tenant.APIHostname,
 			EntityID:    entityID,
 			ACSURL:      acsURL,

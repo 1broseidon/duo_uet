@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"regexp"
 	"time"
 	"user_experience_toolkit/internal/config"
 	samlutil "user_experience_toolkit/internal/saml"
@@ -26,6 +27,22 @@ type SAMLHandler struct {
 	SP      *saml2.SAMLServiceProvider
 	Session *session.Store
 	BaseURL string
+}
+
+// extractSAMLIntegrationKey extracts the integration key from Duo SAML metadata URL
+// Pattern: https://sso-{account}.sso.duosecurity.com/saml2/sp/{ikey}/metadata
+// This is used as a fallback for existing SAML apps that don't have ClientID populated
+func extractSAMLIntegrationKey(metadataURL string) string {
+	if metadataURL == "" {
+		return ""
+	}
+	// Try to extract from metadata URL pattern
+	re := regexp.MustCompile(`/saml2/sp/([A-Z0-9]+)/metadata`)
+	matches := re.FindStringSubmatch(metadataURL)
+	if len(matches) > 1 {
+		return matches[1]
+	}
+	return ""
 }
 
 // NewSAMLHandlerFromApp creates a SAML handler from an application configuration
@@ -89,6 +106,16 @@ func NewSAMLHandlerFromApp(app *config.Application, store *session.Store, baseUR
 func (h *SAMLHandler) Login(c fiber.Ctx) error {
 	log.Printf("[SAMLHandler] Rendering login page for app: %s", h.App.Name)
 
+	// For backward compatibility with existing SAML apps:
+	// Try ClientID first (new apps), then extract from metadata URL (existing apps)
+	integrationKey := h.App.ClientID
+	if integrationKey == "" && h.App.MetadataURL != "" {
+		integrationKey = extractSAMLIntegrationKey(h.App.MetadataURL)
+		if integrationKey != "" {
+			log.Printf("[SAMLHandler] Extracted integration key from metadata URL: %s", integrationKey)
+		}
+	}
+
 	return c.Render("login", fiber.Map{
 		"AppType":        "saml",
 		"AppID":          h.App.ID,
@@ -97,7 +124,7 @@ func (h *SAMLHandler) Login(c fiber.Ctx) error {
 		"MetadataURL":    h.App.MetadataURL,
 		"APIHostname":    h.App.APIHostname,
 		"AdminHostname":  getAdminHostname(h.App.APIHostname),
-		"IntegrationKey": h.App.ClientID,
+		"IntegrationKey": integrationKey,
 	})
 }
 
@@ -302,6 +329,13 @@ func (h *SAMLHandler) Success(c fiber.Ctx) error {
 	// Format response data as JSON for display
 	responseJSON, _ := json.MarshalIndent(responseData, "", "  ")
 
+	// For backward compatibility with existing SAML apps:
+	// Try ClientID first (new apps), then extract from metadata URL (existing apps)
+	integrationKey := h.App.ClientID
+	if integrationKey == "" && h.App.MetadataURL != "" {
+		integrationKey = extractSAMLIntegrationKey(h.App.MetadataURL)
+	}
+
 	return c.Render("success", fiber.Map{
 		"AppType":        "saml",
 		"AppID":          h.App.ID,
@@ -312,7 +346,7 @@ func (h *SAMLHandler) Success(c fiber.Ctx) error {
 		"TokenData":      string(responseJSON),
 		"AttributesJSON": string(responseJSON),
 		"AdminHostname":  getAdminHostname(h.App.APIHostname),
-		"IntegrationKey": h.App.ClientID,
+		"IntegrationKey": integrationKey,
 	})
 }
 

@@ -13,6 +13,16 @@ import (
 	"time"
 )
 
+// getCertsDir returns the certs directory path, handling Docker vs local environments
+func getCertsDir() string {
+	// Check if running in Docker (check for /app directory)
+	if _, err := os.Stat("/app"); err == nil {
+		return "/app/certs"
+	}
+	// Running locally
+	return "./certs"
+}
+
 // GenerateSelfSignedCert generates a self-signed X.509 certificate for SAML signing
 func GenerateSelfSignedCert(commonName string) (*x509.Certificate, *rsa.PrivateKey, error) {
 	// Generate RSA private key
@@ -61,7 +71,8 @@ func GenerateSelfSignedCert(commonName string) (*x509.Certificate, *rsa.PrivateK
 
 // LoadOrGenerateCerts loads certificates from disk or generates new ones
 func LoadOrGenerateCerts(appID string, commonName string) (*x509.Certificate, *rsa.PrivateKey, error) {
-	certsDir := "./certs"
+	// Use absolute path for Docker compatibility
+	certsDir := getCertsDir()
 	certPath := filepath.Join(certsDir, fmt.Sprintf("saml-%s.cert", appID))
 	keyPath := filepath.Join(certsDir, fmt.Sprintf("saml-%s.key", appID))
 

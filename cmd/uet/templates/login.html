@@ -150,8 +150,13 @@
 
                 <!-- Configuration Section -->
                 <div class="auth-config-section">
-                    <h3 class="auth-config-heading">Configuration Details</h3>
-                    <div class="auth-config-inner">
+                    <h3 class="auth-config-heading" onclick="toggleConfig(this)">
+                        <span>Configuration Details</span>
+                        <svg class="auth-config-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </h3>
+                    <div class="auth-config-inner" style="display: none;">
                         <div class="auth-config-field">
                             <label class="auth-config-label">Client ID</label>
                             <div class="auth-config-value">
@@ -200,8 +205,13 @@
 
                 <!-- Configuration Section -->
                 <div class="auth-config-section">
-                    <h3 class="auth-config-heading">Configuration Details</h3>
-                    <div class="auth-config-inner">
+                    <h3 class="auth-config-heading" onclick="toggleConfig(this)">
+                        <span>Configuration Details</span>
+                        <svg class="auth-config-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </h3>
+                    <div class="auth-config-inner" style="display: none;">
                         <div class="auth-config-field">
                             <label class="auth-config-label">Entity ID</label>
                             <div class="auth-config-value">
@@ -243,6 +253,19 @@ function togglePassword() {
         passwordInput.type = 'password';
         showIcon.style.display = 'block';
         hideIcon.style.display = 'none';
+    }
+}
+
+function toggleConfig(header) {
+    const content = header.nextElementSibling;
+    const chevron = header.querySelector('.auth-config-chevron');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.display = 'none';
+        chevron.style.transform = 'rotate(0deg)';
     }
 }
 </script>

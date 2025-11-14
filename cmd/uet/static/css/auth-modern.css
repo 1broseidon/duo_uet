@@ -445,12 +445,27 @@ body:has(.auth-split-screen) nav.navbar {
 }
 
 .auth-config-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
     color: var(--bulma-text-weak);
     margin-bottom: var(--space-4);
     text-transform: uppercase;
     letter-spacing: var(--tracking-wider);
+    cursor: pointer;
+    user-select: none;
+    transition: color var(--transition-base);
+}
+
+.auth-config-heading:hover {
+    color: var(--bulma-text);
+}
+
+.auth-config-chevron {
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
 }
 
 .auth-config-inner {
