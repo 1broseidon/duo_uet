@@ -1,4 +1,32 @@
-# Contributing to User Experience Toolkit
+# Contributing to Duo User Experience Toolkit
+
+## Release Process
+
+### Creating a Release
+
+1. **Ensure all changes are committed and pushed to main**
+2. **Create and push a version tag:**
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+3. **Automated actions:**
+   - GitHub Actions builds Docker images (multi-arch)
+   - AI-powered release notes are generated from commits
+   - CHANGELOG.md is automatically updated
+   - GitHub Release is created
+
+### Changelog Automation
+
+The repository uses [promptext-notes](https://github.com/1broseidon/promptext-notes) to automatically generate release notes from git commits when you push a version tag. The workflow:
+
+1. Analyzes commits since the previous tag
+2. Uses AI to categorize and describe changes
+3. Updates `CHANGELOG.md` following Keep a Changelog format
+4. Creates a GitHub Release with detailed notes
+
+**Configuration:** See `.promptext-notes.yml` for customization of what files are analyzed and how notes are generated.
 
 ## Development Setup
 

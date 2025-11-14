@@ -1,0 +1,206 @@
+name: Auto-Generate Release Notes & Changelog
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+        type: string
+      since_tag:
+        description: 'Previous tag to compare against (optional)'
+        required: false
+        type: string
+      api_provider:
+        description: 'AI provider for note generation'
+        required: false
+        type: choice
+        options:
+          - cerebras
+          - openrouter
+          - anthropic
+          - openai
+          - groq
+        default: cerebras
+      enable_polish:
+        description: 'Enable 2-stage polish workflow'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full git history for changelog generation
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
+      - name: Install promptext-notes
+        run: |
+          git clone https://github.com/1broseidon/promptext-notes.git /tmp/promptext-notes
+          cd /tmp/promptext-notes
+          go install ./cmd/promptext-notes
+
+      - name: Determine version and previous tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+            SINCE_TAG="${{ github.event.inputs.since_tag }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/}"
+            SINCE_TAG=$(git describe --tags --abbrev=0 ${VERSION}^ 2>/dev/null || echo "")
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "since_tag=${SINCE_TAG}" >> $GITHUB_OUTPUT
+          echo "Version: ${VERSION}"
+          echo "Since: ${SINCE_TAG}"
+
+      - name: Set API provider
+        id: api
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PROVIDER="${{ github.event.inputs.api_provider }}"
+          else
+            PROVIDER="cerebras"
+          fi
+          echo "provider=${PROVIDER}" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: generate
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          # Build command with model selection per provider
+          case "${{ steps.api.outputs.provider }}" in
+            openai)
+              MODEL="gpt-4o-mini"
+              ;;
+            anthropic)
+              MODEL="claude-haiku-4-5"
+              ;;
+            cerebras)
+              MODEL="llama-3.3-70b"
+              ;;
+            groq)
+              MODEL="llama-3.3-70b-versatile"
+              ;;
+            openrouter)
+              MODEL="google/gemini-2.5-flash"
+              ;;
+            *)
+              MODEL=""
+              ;;
+          esac
+
+          # Build promptext-notes command
+          CMD="promptext-notes"
+          CMD="$CMD --api-provider ${{ steps.api.outputs.provider }}"
+          [ -n "$MODEL" ] && CMD="$CMD --model $MODEL"
+          CMD="$CMD --version ${{ steps.version.outputs.version }}"
+          [ -n "${{ steps.version.outputs.since_tag }}" ] && CMD="$CMD --since-tag ${{ steps.version.outputs.since_tag }}"
+
+          # For tag pushes, enable polish workflow and auto-exclude meta files
+          if [ "${{ github.event_name }}" = "push" ]; then
+            CMD="$CMD --polish --auto-exclude-meta"
+          elif [ "${{ github.event.inputs.enable_polish }}" = "true" ]; then
+            CMD="$CMD --polish"
+          fi
+
+          # Generate notes
+          echo "Running: $CMD"
+          $CMD > release-notes.md
+
+          # Store for later steps
+          cat release-notes.md >> $GITHUB_STEP_SUMMARY
+          echo "notes_file=release-notes.md" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
+
+      - name: Update CHANGELOG.md
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          DATE=$(date +%Y-%m-%d)
+
+          # Create CHANGELOG.md if it doesn't exist
+          if [ ! -f CHANGELOG.md ]; then
+            cat > CHANGELOG.md << 'EOF'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+
+          The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+          and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+          EOF
+          fi
+
+          # Check if version already exists in CHANGELOG
+          if grep -q "## \[${VERSION}\]" CHANGELOG.md; then
+            echo "Version ${VERSION} already exists in CHANGELOG.md, skipping update"
+            exit 0
+          fi
+
+          # Create temporary file with new entry
+          cat > /tmp/new-entry.md << EOF
+          ## [${VERSION}] - ${DATE}
+
+          $(cat release-notes.md)
+
+          EOF
+
+          # Insert new entry after the header
+          awk '
+            /^# Changelog/ { print; print ""; getline; print; getline; print; system("cat /tmp/new-entry.md"); next }
+            { print }
+          ' CHANGELOG.md > /tmp/changelog-updated.md
+
+          mv /tmp/changelog-updated.md CHANGELOG.md
+
+          echo "✅ CHANGELOG.md updated with version ${VERSION}"
+
+      - name: Commit CHANGELOG changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if git diff --quiet CHANGELOG.md; then
+            echo "No changes to CHANGELOG.md"
+          else
+            git add CHANGELOG.md
+            git commit -m "docs: update CHANGELOG for ${{ steps.version.outputs.version }}"
+            git push origin HEAD:main
+            echo "✅ CHANGELOG.md committed and pushed"
+          fi
+
+      - name: Upload release notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ steps.version.outputs.version }}
+          path: release-notes.md
+          retention-days: 90

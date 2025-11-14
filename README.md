@@ -337,14 +337,9 @@ docker compose logs -f
 
 ## Changelog
 
-See [GitHub Releases](https://github.com/1broseidon/duo_uet/releases) for version history.
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and [GitHub Releases](https://github.com/1broseidon/duo_uet/releases) for release notes.
 
-**Recent additions:**
-- Docker containerization with multi-arch support
-- GitHub Actions CI/CD for tagged releases
-- Optional AES-256-GCM config encryption
-- Redesigned success page for technical audiences
-- Unified design system with light/dark themes
+**Automated release notes:** When you push a version tag (e.g., `v1.0.0`), GitHub Actions automatically generates AI-powered release notes and updates the CHANGELOG.
 
 ## License
 
