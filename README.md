@@ -288,8 +288,10 @@ Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
 .
 ├── cmd/
 │   ├── uet/              # Main application entry point
-│   ├── encrypt-config/   # Config encryption utility
-│   └── samltest/         # SAML testing utility
+│   │   ├── main.go       # Application entrypoint with embedded assets
+│   │   ├── static/       # CSS, JS, images (embedded in binary)
+│   │   └── templates/    # HTML templates (embedded in binary)
+│   └── encrypt-config/   # Config encryption utility
 ├── internal/
 │   ├── config/           # YAML config + encryption
 │   ├── crypto/           # AES-256-GCM encryption
@@ -297,14 +299,12 @@ Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
 │   ├── duoadmin/         # Duo Admin API client
 │   ├── websdk2/          # WebSDK v2 signature generation
 │   └── saml/             # SAML request/response handling
-├── templates/            # Go HTML templates
-├── static/
-│   ├── css/              # Design system, Bulma overrides
-│   ├── js/               # Theme switcher, Duo WebSDK v2
-│   └── images/           # Duo logo, assets
 ├── .github/workflows/    # CI/CD pipelines
+├── .goreleaser.yml       # Multi-platform build automation
+├── Dockerfile            # Local development builds
+├── Dockerfile.goreleaser # CI/CD optimized builds
 ├── CONTRIBUTING.md       # Development guidelines
-└── config.yaml           # Runtime configuration
+└── config.yaml.example   # Configuration template
 ```
 
 ## Documentation

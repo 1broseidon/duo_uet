@@ -37,12 +37,8 @@ RUN addgroup -g 1000 uet && \
 # Set working directory
 WORKDIR /app
 
-# Copy binary from builder
+# Copy binary from builder (includes embedded static and templates)
 COPY --from=builder /build/uet /app/uet
-
-# Copy static assets and templates
-COPY --chown=uet:uet static /app/static
-COPY --chown=uet:uet templates /app/templates
 
 # Copy example config (users will mount their own config.yaml)
 COPY --chown=uet:uet config.yaml.example /app/config.yaml.example
