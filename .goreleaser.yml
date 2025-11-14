@@ -1,0 +1,162 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  # Main UET application
+  - id: uet
+    binary: uet
+    main: ./cmd/uet
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+  # Encrypt-config utility
+  - id: encrypt-config
+    binary: encrypt-config
+    main: ./cmd/encrypt-config
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: default
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- .Arch }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE*
+      - README*
+      - CHANGELOG*
+      - config.yaml.example
+
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - Merge pull request
+      - Merge branch
+
+dockers:
+  # Docker image for linux/amd64
+  - image_templates:
+      - "ghcr.io/1broseidon/duo_uet:{{ .Version }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}.{{ .Minor }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:latest-amd64"
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+    goos: linux
+    goarch: amd64
+    extra_files:
+      - static
+      - templates
+      - config.yaml.example
+
+  # Docker image for linux/arm64
+  - image_templates:
+      - "ghcr.io/1broseidon/duo_uet:{{ .Version }}-arm64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}.{{ .Minor }}-arm64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}-arm64"
+      - "ghcr.io/1broseidon/duo_uet:latest-arm64"
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+    goos: linux
+    goarch: arm64
+    extra_files:
+      - static
+      - templates
+      - config.yaml.example
+
+docker_manifests:
+  # Create multi-arch manifest
+  - name_template: "ghcr.io/1broseidon/duo_uet:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/1broseidon/duo_uet:{{ .Version }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Version }}-arm64"
+
+  - name_template: "ghcr.io/1broseidon/duo_uet:{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}.{{ .Minor }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}.{{ .Minor }}-arm64"
+
+  - name_template: "ghcr.io/1broseidon/duo_uet:{{ .Major }}"
+    image_templates:
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}-amd64"
+      - "ghcr.io/1broseidon/duo_uet:{{ .Major }}-arm64"
+
+  - name_template: "ghcr.io/1broseidon/duo_uet:latest"
+    image_templates:
+      - "ghcr.io/1broseidon/duo_uet:latest-amd64"
+      - "ghcr.io/1broseidon/duo_uet:latest-arm64"
+
+release:
+  github:
+    owner: 1broseidon
+    name: duo_uet
+  draft: false
+  prerelease: auto
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  header: |
+    ## Duo User Experience Toolkit v{{.Version}}
+
+    Download the appropriate binary for your platform below.
+
+    Docker images are available at `ghcr.io/1broseidon/duo_uet:{{.Version}}`

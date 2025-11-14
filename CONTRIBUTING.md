@@ -37,9 +37,30 @@
    git push origin v1.0.4
    ```
 
-5. **Automated actions:**
-   - GitHub Actions builds and pushes Docker images (multi-arch: linux/amd64, linux/arm64)
+5. **Automated actions (via GoReleaser):**
+   - Builds binaries for multiple platforms (linux, darwin, windows × amd64, arm64)
+   - Creates GitHub Release with downloadable binaries and checksums
+   - Builds and pushes Docker images (multi-arch: linux/amd64, linux/arm64)
    - Images are tagged with version, major.minor, major, and latest
+   - Generates release notes from git commits
+
+### Release Artifacts
+
+Each release includes:
+
+**Binaries:**
+- `uet` - Main application for all platforms
+- `encrypt-config` - Config encryption utility for all platforms
+- Platforms: Linux (amd64, arm64), macOS (amd64, arm64), Windows (amd64, arm64)
+
+**Docker Images:**
+- `ghcr.io/1broseidon/duo_uet:v1.0.0`
+- `ghcr.io/1broseidon/duo_uet:1.0`
+- `ghcr.io/1broseidon/duo_uet:1`
+- `ghcr.io/1broseidon/duo_uet:latest`
+
+**Checksums:**
+- `checksums.txt` - SHA256 checksums for all binaries
 
 ### Tag Validation
 

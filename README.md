@@ -43,6 +43,19 @@ docker run -d \
 
 Access at `http://localhost:8080`
 
+### Using Pre-built Binaries
+
+Download the latest release for your platform from [GitHub Releases](https://github.com/1broseidon/duo_uet/releases):
+
+```bash
+# Linux/macOS example
+wget https://github.com/1broseidon/duo_uet/releases/download/v1.0.0/user_experience_toolkit_1.0.0_linux_amd64.tar.gz
+tar -xzf user_experience_toolkit_1.0.0_linux_amd64.tar.gz
+./uet
+```
+
+Available platforms: Linux, macOS, Windows (amd64, arm64)
+
 ### From Source
 
 **Prerequisites:**
