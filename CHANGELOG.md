@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-11-14
+
+### Added
+- Embedded static files and templates into binary for single-file distribution
+- GoReleaser integration for automated multi-platform builds
+
+### Changed
+- Relocated static/ and templates/ into cmd/uet/ directory
+- Binaries now fully standalone - no external files required
+- Improved Docker build performance (50-60% faster with GoReleaser)
+
+### Fixed
+- Docker healthcheck now uses IPv4 (127.0.0.1) instead of localhost
+
 ## [1.0.0] - 2025-11-14
 
 ### Added
