@@ -12,7 +12,7 @@ Self-hosted testing platform for Duo authentication flows across WebSDK v4, Devi
 
 ## Quick Start
 
-Start testing Duo authentication flows in under 60 seconds:
+**Step 1: Run the Toolkit**
 
 ```bash
 docker run -d \
@@ -22,18 +22,39 @@ docker run -d \
   ghcr.io/1broseidon/duo_uet:latest
 ```
 
-Open `http://localhost:8080/configure` to add your Duo Admin API credentials and create test applications. Configuration persists automatically in the Docker volume.
+**Step 2: Create Admin API Credentials in Duo**
+
+1. Log into the [Duo Admin Panel](https://admin.duosecurity.com)
+2. Go to **Applications** → **Protect an Application**
+3. Search for "Admin API" and click **Protect**
+4. Grant these permissions:
+
+![Required Admin API Permissions](docs/screenshots/admin_api_permissions.png)
+
+   - ✅ **Grant read information** (validates credentials)
+   - ✅ **Grant applications** (auto-creates test apps)
+
+**Step 3: Configure the Toolkit**
+
+1. Open `http://localhost:8080/configure`
+2. Click **Add Tenant** and paste your Admin API credentials:
+   - Integration key
+   - Secret key
+   - API hostname
+3. Start creating test applications!
+
+Configuration persists automatically in the Docker volume.
 
 <details>
 <summary><strong>Alternative: Docker Compose</strong></summary>
 
-For persistent test environments:
+For persistent test environments, use the included [`docker-compose.yml`](docker-compose.yml):
 
 ```bash
 docker compose up -d
 ```
 
-Uses the included `docker-compose.yml` with named volumes and health checks.
+Includes named volumes and health checks.
 </details>
 
 <details>
@@ -145,18 +166,6 @@ Priority order for config file resolution:
 2. `/app/config/config.yaml` (Docker default)
 3. `./config.yaml` (local development)
 
-### Admin API Permissions
-
-When creating Admin API credentials in Duo Admin Panel, ensure the following permissions are granted:
-
-![Required Admin API Permissions](docs/screenshots/admin_api_permissions.png)
-
-**Required permissions:**
-- ✅ **Grant read information** - Read account information and statistics
-- ✅ **Grant applications** - Create, modify, and delete applications
-
-These permissions allow the toolkit to validate credentials and auto-provision test applications.
-
 ### Advanced: Manual Configuration
 
 Edit `config.yaml` directly:
@@ -254,55 +263,7 @@ Each flow provides:
 - **Auth:** Duo Universal SDK, SAML 2.0, OIDC
 - **Container:** Docker, Alpine Linux, multi-arch
 
-## Development
-
-### Local Development
-
-```bash
-# Run with auto-reload (requires air)
-go install github.com/cosmtrek/air@latest
-air
-
-# Or standard go run
-go run ./cmd/uet
-```
-
-### Testing
-
-```bash
-# Run all tests
-go test ./...
-
-# With coverage
-go test -cover ./...
-go test -coverprofile=coverage.out ./...
-go tool cover -html=coverage.out
-```
-
-### Code Quality
-
-```bash
-# Format
-go fmt ./...
-
-# Vet
-go vet ./...
-
-# Static analysis (install: go install honnef.co/go/tools/cmd/staticcheck@latest)
-staticcheck ./...
-
-# Cyclomatic complexity (install: go install github.com/fzipp/gocyclo/cmd/gocyclo@latest)
-gocyclo -over 15 .
-```
-
-### Pre-commit Hooks
-
-Automatically runs tests before each commit. To bypass:
-```bash
-git commit --no-verify -m "message"
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+**Development:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and code quality guidelines.
 
 ## Docker
 
