@@ -29,19 +29,50 @@ type SAMLHandler struct {
 	BaseURL string
 }
 
-// extractSAMLIntegrationKey extracts the integration key from Duo SAML metadata URL
-// Pattern: https://sso-{account}.sso.duosecurity.com/saml2/sp/{ikey}/metadata
+var samlIntegrationKeyPattern = regexp.MustCompile(`/saml2/sp/([A-Z0-9]+)/`)
+
+// extractSAMLIntegrationKey extracts the integration key from Duo SSO URLs (metadata or SSO)
+// Pattern: https://sso-{account}.sso.duosecurity.com/saml2/sp/{ikey}/(metadata|sso)
 // This is used as a fallback for existing SAML apps that don't have ClientID populated
-func extractSAMLIntegrationKey(metadataURL string) string {
-	if metadataURL == "" {
+func extractSAMLIntegrationKey(duoURL string) string {
+	if duoURL == "" {
 		return ""
 	}
-	// Try to extract from metadata URL pattern
-	re := regexp.MustCompile(`/saml2/sp/([A-Z0-9]+)/metadata`)
-	matches := re.FindStringSubmatch(metadataURL)
+	matches := samlIntegrationKeyPattern.FindStringSubmatch(duoURL)
 	if len(matches) > 1 {
 		return matches[1]
 	}
+	return ""
+}
+
+// resolveIntegrationKey attempts to determine the Duo integration key for SAML apps
+// It prefers the configured ClientID but can derive the key from Duo SSO metadata URLs.
+func (h *SAMLHandler) resolveIntegrationKey() string {
+	if h == nil || h.App == nil {
+		return ""
+	}
+
+	if h.App.ClientID != "" {
+		return h.App.ClientID
+	}
+
+	type source struct {
+		label string
+		value string
+	}
+
+	for _, candidate := range []source{
+		{label: "IDP Entity ID", value: h.App.IDPEntityID},
+		{label: "IDP SSO URL", value: h.App.IDPSSOURL},
+		{label: "Metadata URL", value: h.App.MetadataURL},
+	} {
+		if key := extractSAMLIntegrationKey(candidate.value); key != "" {
+			log.Printf("[SAMLHandler] Derived integration key from %s: %s", candidate.label, key)
+			return key
+		}
+	}
+
+	log.Printf("[SAMLHandler] Unable to determine integration key for app: %s", h.App.Name)
 	return ""
 }
 
@@ -108,13 +139,7 @@ func (h *SAMLHandler) Login(c fiber.Ctx) error {
 
 	// For backward compatibility with existing SAML apps:
 	// Try ClientID first (new apps), then extract from metadata URL (existing apps)
-	integrationKey := h.App.ClientID
-	if integrationKey == "" && h.App.MetadataURL != "" {
-		integrationKey = extractSAMLIntegrationKey(h.App.MetadataURL)
-		if integrationKey != "" {
-			log.Printf("[SAMLHandler] Extracted integration key from metadata URL: %s", integrationKey)
-		}
-	}
+	integrationKey := h.resolveIntegrationKey()
 
 	return c.Render("login", fiber.Map{
 		"AppType":        "saml",
@@ -331,10 +356,7 @@ func (h *SAMLHandler) Success(c fiber.Ctx) error {
 
 	// For backward compatibility with existing SAML apps:
 	// Try ClientID first (new apps), then extract from metadata URL (existing apps)
-	integrationKey := h.App.ClientID
-	if integrationKey == "" && h.App.MetadataURL != "" {
-		integrationKey = extractSAMLIntegrationKey(h.App.MetadataURL)
-	}
+	integrationKey := h.resolveIntegrationKey()
 
 	return c.Render("success", fiber.Map{
 		"AppType":        "saml",

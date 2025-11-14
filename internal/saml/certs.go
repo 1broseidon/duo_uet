@@ -17,7 +17,7 @@ import (
 func getCertsDir() string {
 	// Check if running in Docker (check for /app directory)
 	if _, err := os.Stat("/app"); err == nil {
-		return "/app/certs"
+		return "/app/config/certs"
 	}
 	// Running locally
 	return "./certs"
