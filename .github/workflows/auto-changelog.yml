@@ -14,22 +14,6 @@ on:
         description: 'Previous tag to compare against (optional)'
         required: false
         type: string
-      api_provider:
-        description: 'AI provider for note generation'
-        required: false
-        type: choice
-        options:
-          - cerebras
-          - openrouter
-          - anthropic
-          - openai
-          - groq
-        default: cerebras
-      enable_polish:
-        description: 'Enable 2-stage polish workflow'
-        required: false
-        type: boolean
-        default: true
 
 jobs:
   generate-release-notes:
@@ -70,60 +54,16 @@ jobs:
           echo "Version: ${VERSION}"
           echo "Since: ${SINCE_TAG}"
 
-      - name: Set API provider
-        id: api
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            PROVIDER="${{ github.event.inputs.api_provider }}"
-          else
-            PROVIDER="cerebras"
-          fi
-          echo "provider=${PROVIDER}" >> $GITHUB_OUTPUT
-
       - name: Generate release notes
         id: generate
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
-          # Build command with model selection per provider
-          case "${{ steps.api.outputs.provider }}" in
-            openai)
-              MODEL="gpt-4o-mini"
-              ;;
-            anthropic)
-              MODEL="claude-haiku-4-5"
-              ;;
-            cerebras)
-              MODEL="llama-3.3-70b"
-              ;;
-            groq)
-              MODEL="llama-3.3-70b-versatile"
-              ;;
-            openrouter)
-              MODEL="google/gemini-2.5-flash"
-              ;;
-            *)
-              MODEL=""
-              ;;
-          esac
-
-          # Build promptext-notes command
-          CMD="promptext-notes"
-          CMD="$CMD --api-provider ${{ steps.api.outputs.provider }}"
-          [ -n "$MODEL" ] && CMD="$CMD --model $MODEL"
-          CMD="$CMD --version ${{ steps.version.outputs.version }}"
-          [ -n "${{ steps.version.outputs.since_tag }}" ] && CMD="$CMD --since-tag ${{ steps.version.outputs.since_tag }}"
-
-          # For tag pushes, enable polish workflow and auto-exclude meta files
-          if [ "${{ github.event_name }}" = "push" ]; then
-            CMD="$CMD --polish --auto-exclude-meta"
-          elif [ "${{ github.event.inputs.enable_polish }}" = "true" ]; then
-            CMD="$CMD --polish"
-          fi
+          # Generate release notes using Cerebras
+          CMD="promptext-notes -generate -provider cerebras -model llama-3.3-70b"
+          CMD="$CMD -version ${{ steps.version.outputs.version }}"
+          [ -n "${{ steps.version.outputs.since_tag }}" ] && CMD="$CMD -since ${{ steps.version.outputs.since_tag }}"
+          CMD="$CMD -exclude-files CHANGELOG.md,README.md,.github"
 
           # Generate notes
           echo "Running: $CMD"
