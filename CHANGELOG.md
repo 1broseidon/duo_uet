@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2025-11-14
+
+### Added
+- Admin Panel quick access links on login and success pages
+- Duo Logs quick access links with 24-hour timeRange filter
+- Split-screen success page layout (2/3 results + 1/3 API response)
+- Independent scrolling for JSON response sidebar
+- Custom scrollbar styling for polished appearance
+- `getAdminHostname()` helper function to convert API hostname to Admin hostname
+
+### Changed
+- Success page redesigned with modern split-screen layout
+- API response now always visible without toggle/collapse
+- Admin action buttons positioned below sign-in for better accessibility
+- Responsive design stacks vertically on tablets (<1024px)
+
+### Improved
+- Enhanced testing workflow with direct navigation to Duo Admin Panel
+- Better debugging experience with simultaneous view of results and raw API data
+- Consistent button styling across login and success pages
+
 ## [1.0.2] - 2025-11-14
 
 ### Added
