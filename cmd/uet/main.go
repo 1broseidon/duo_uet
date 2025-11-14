@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"user_experience_toolkit/internal/config"
@@ -21,17 +22,29 @@ var staticFS embed.FS
 var templatesFS embed.FS
 
 const (
-	configPath = "config.yaml"
-	port       = ":8080"
+	defaultConfigPath = "/app/config/config.yaml"
+	port              = ":8080"
 )
 
 func main() {
-	// Load configuration
+	// Get config path from environment or use default
+	configPath := os.Getenv("UET_CONFIG_PATH")
+	if configPath == "" {
+		// Check if running in Docker (check for /app directory)
+		if _, err := os.Stat("/app"); err == nil {
+			configPath = defaultConfigPath
+		} else {
+			// Running locally, use current directory
+			configPath = "config.yaml"
+		}
+	}
+
+	log.Printf("Using config file: %s", configPath)
+
+	// Load configuration (will auto-create if missing)
 	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
-		log.Printf("Warning: Failed to load config: %v", err)
-		// Create an empty config if it doesn't exist
-		cfg = &config.Config{}
+		log.Fatalf("Failed to load config: %v", err)
 	}
 
 	// Initialize Fiber app

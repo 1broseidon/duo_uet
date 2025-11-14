@@ -4,48 +4,88 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#docker)
 
-> Self-hosted testing platform for Duo authentication flows with multi-tenant management and modern UI
+Self-hosted testing platform for Duo authentication flows across WebSDK v4, Device Management Portal, SAML 2.0, and OIDC. Built for Customer Success Engineers and technical teams who need to test, demonstrate, and validate Duo authentication policies with real-world scenarios.
 
-A toolkit for Customer Success Engineers and technical teams to test and demonstrate Duo authentication policies across multiple integration types: Universal Prompt (WebSDK v4), Device Management Portal, SAML SSO, and OIDC SSO.
+![Dashboard Screenshot](docs/screenshots/dashboard.png)
 
-## Features
-
-- **Multi-Tenant Management** - Configure multiple Duo tenants with isolated credentials
-- **Multiple Auth Types** - WebSDK v4, DMP, SAML 2.0, OIDC in one platform
-- **Web Configuration UI** - No manual config file editing required
-- **Auto-Create Applications** - Generate Duo applications via Admin API
-- **Optional Encryption** - AES-256-GCM encryption for config secrets at rest
-- **Modern Design System** - Theme-aware UI with light/dark mode
-- **Docker-First** - Production-ready containerization with multi-arch support
+**Key capabilities:** Multi-tenant management · Web-based configuration · Auto-provisioning via Admin API · Policy testing · Theme-aware UI
 
 ## Quick Start
 
-### Using Docker (Recommended)
+Start testing Duo authentication flows in under 60 seconds:
 
-**Docker Compose:**
-```bash
-# Copy config
-cp config.yaml.example config.yaml
-
-# Edit config.yaml with your Duo credentials, then:
-docker compose up -d
-```
-
-**Docker Run:**
 ```bash
 docker run -d \
   --name duo-uet \
   -p 8080:8080 \
-  -v $(pwd)/config.yaml:/app/config.yaml:ro \
-  -v $(pwd)/certs:/app/certs:ro \
+  -v duo-uet-data:/app/config \
   ghcr.io/1broseidon/duo_uet:latest
 ```
 
-Access at `http://localhost:8080`
+Open `http://localhost:8080/configure` to add your Duo Admin API credentials and create test applications. Configuration persists automatically in the Docker volume.
 
-### Using Pre-built Binaries
+<details>
+<summary><strong>Alternative: Docker Compose</strong></summary>
 
-Download the latest release for your platform from [GitHub Releases](https://github.com/1broseidon/duo_uet/releases):
+For production deployments with managed volumes:
+
+```bash
+docker compose up -d
+```
+
+Uses the included `docker-compose.yml` with named volumes and health checks.
+</details>
+
+<details>
+<summary><strong>Alternative: Local Directory</strong></summary>
+
+To access the config file directly on your host:
+
+```bash
+mkdir -p duo-config
+docker run -d \
+  --name duo-uet \
+  -p 8080:8080 \
+  -v $(pwd)/duo-config:/app/config \
+  ghcr.io/1broseidon/duo_uet:latest
+```
+
+Config appears at `./duo-config/config.yaml`
+</details>
+
+### What You Get
+
+- **Multi-tenant support**: Test multiple Duo environments simultaneously
+- **Auto-provisioning**: Creates applications in Duo Admin Panel via API
+- **Full auth coverage**: WebSDK v4, DMP, SAML 2.0, OIDC in one interface
+- **Zero config required**: Web UI handles all configuration
+- **Persistent storage**: Configuration survives container restarts
+
+## Use Cases
+
+**For Customer Success Engineers:**
+- Demonstrate different Duo authentication experiences to prospects
+- Validate policy configurations before customer deployment
+- Troubleshoot authentication flows with isolated test environments
+- Compare behavior across WebSDK versions and SSO protocols
+
+**For Technical Teams:**
+- Integration testing for Duo authentication workflows
+- CI/CD pipeline validation with automated auth testing
+- Training environment for new team members
+- Policy impact analysis before production rollout
+
+**For Security Teams:**
+- Audit authentication behavior across different configurations
+- Test MFA policy enforcement in controlled environments
+- Validate SSO metadata and claim mappings
+- Security assessment of authentication flows
+
+## Installation
+
+### Pre-built Binaries
+
+Download the latest release from [GitHub Releases](https://github.com/1broseidon/duo_uet/releases):
 
 ```bash
 # Linux/macOS example
@@ -54,54 +94,71 @@ tar -xzf user_experience_toolkit_1.0.0_linux_amd64.tar.gz
 ./uet
 ```
 
-Available platforms: Linux, macOS, Windows (amd64, arm64)
+Platforms: Linux, macOS, Windows (amd64, arm64)
 
 ### From Source
 
-**Prerequisites:**
-- Go 1.25+
-- Git
+Requires Go 1.25+:
 
-**Setup:**
 ```bash
-# Clone and install
 git clone https://github.com/1broseidon/duo_uet.git
 cd duo_uet
 go mod download
-
-# Build and run
 go build -o uet ./cmd/uet
 ./uet
 ```
 
-Access at: `http://localhost:8080`
+Access at `http://localhost:8080`
 
-## Configuration
+## How It Works
 
-### Web UI (Recommended)
+### Configuration Flow
 
-1. Navigate to `http://localhost:8080/configure`
-2. Add a tenant with Admin API credentials
-3. Create applications manually or auto-create from Duo Admin Panel
-4. Applications appear on home dashboard when enabled
+```
+┌─────────────────┐
+│  1. Start App   │  Docker or binary starts with empty config
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ 2. Web UI Setup │  Navigate to /configure
+└────────┬────────┘  Add Admin API credentials
+         │
+         ▼
+┌─────────────────┐
+│ 3. Auto-Create  │  Provision apps via Duo Admin API
+└────────┬────────┘  Generate client IDs/secrets automatically
+         │
+         ▼
+┌─────────────────┐
+│  4. Test Flows  │  Applications appear on dashboard
+└─────────────────┘  Test authentication immediately
+```
 
-### Config File
+Configuration is stored in `config.yaml` and persists in your Docker volume or local directory. The file is automatically created on first run and managed through the web UI.
 
-The toolkit uses `config.yaml` for persistence. Structure:
+### Config File Location
+
+Priority order for config file resolution:
+
+1. `UET_CONFIG_PATH` environment variable
+2. `/app/config/config.yaml` (Docker default)
+3. `./config.yaml` (local development)
+
+### Advanced: Manual Configuration
+
+For automation or GitOps workflows, edit `config.yaml` directly:
 
 ```yaml
-# Optional: Encrypt secrets at rest
-encryption_enabled: false
+encryption_enabled: false  # Optional: Enable AES-256-GCM encryption
 
-# Multi-tenant support
 tenants:
   - id: "tenant-1"
     name: "Production"
     api_hostname: "api-xxxxxxxx.duosecurity.com"
-    admin_api_ikey: "DIXXXXXXXXXXXXXXXXXX"
+    admin_api_key: "DIXXXXXXXXXXXXXXXXXX"
     admin_api_secret: "your-secret-key"
 
-# Applications auto-managed via UI or Admin API
 applications:
   - id: "app-1"
     name: "WebSDK v4 Demo"
@@ -110,28 +167,24 @@ applications:
     enabled: true
     client_id: "DIXXXXXXXXXXXXXXXXXX"
     client_secret: "your-client-secret"
-    # ... type-specific fields
 ```
 
-See [config.yaml.example](config.yaml.example) for full schema.
+Full schema: [config.yaml.example](config.yaml.example)
 
-### Encryption (Optional)
+### Security: Config Encryption
 
 Protect secrets at rest with AES-256-GCM encryption:
 
 ```bash
-# Enable in config.yaml
+# Enable encryption in config.yaml
 encryption_enabled: true
 
-# Provide master key
+# Provide master key via environment
 export UET_MASTER_KEY="your-secure-password"
 
-# Or use auto-generated key file
-# (creates .uet_key with chmod 600)
+# Or use auto-generated key file (creates .uet_key with chmod 600)
 ./uet
 ```
-
-See [config.yaml.example](config.yaml.example) for full configuration details.
 
 ## Supported Authentication Types
 
@@ -237,50 +290,32 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Docker
 
-### Pre-built Images
-
-Pull and run from GitHub Container Registry:
-
-```bash
-docker pull ghcr.io/1broseidon/duo_uet:latest
-
-docker run -d \
-  --name duo-uet \
-  -p 8080:8080 \
-  -v $(pwd)/config.yaml:/app/config.yaml:ro \
-  ghcr.io/1broseidon/duo_uet:latest
-```
-
 ### Build Locally
 
 ```bash
 docker build -t duo-uet:local .
-docker run -d -p 8080:8080 -v $(pwd)/config.yaml:/app/config.yaml:ro duo-uet:local
+
+# Run with auto-generated config
+docker run -d \
+  -p 8080:8080 \
+  -v duo-uet-local:/app/config \
+  duo-uet:local
 ```
 
-### Docker Compose
+### Available Images
 
-```yaml
-version: '3.8'
-services:
-  uet:
-    image: ghcr.io/1broseidon/duo_uet:latest
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./config.yaml:/app/config.yaml:ro
-      - ./certs:/app/certs:ro
-    environment:
-      UET_MASTER_KEY: ${UET_MASTER_KEY}  # Optional: for encrypted config
-    restart: unless-stopped
-```
+Automated builds on version tags (`v*.*.*`):
+- `ghcr.io/1broseidon/duo_uet:latest` - Latest release
+- `ghcr.io/1broseidon/duo_uet:v1.0.0` - Specific version
+- `ghcr.io/1broseidon/duo_uet:v1.0`, `v1` - Major/minor aliases
 
-### CI/CD
+Multi-arch support: `linux/amd64`, `linux/arm64`
 
-Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
-- `v1.0.0` - Exact version
-- `v1.0`, `v1` - Major/minor aliases
-- `latest` - Latest release
+### Environment Variables
+
+- **`UET_CONFIG_PATH`** - Override config file location (default: `/app/config/config.yaml` in Docker, `./config.yaml` locally)
+- **`UET_MASTER_KEY`** - Master encryption key for encrypted configs (optional)
+- **`TZ`** - Timezone for logs and timestamps (default: `UTC`)
 
 ## Project Structure
 
@@ -324,13 +359,27 @@ Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
 
 ## Common Issues
 
-### Config not loading
+### Config not persisting
 ```bash
-# Check file exists and is readable
-ls -la config.yaml
+# Check if volume is mounted correctly
+docker inspect duo-uet | grep Mounts -A 10
 
-# Verify YAML syntax
-cat config.yaml | python -c 'import yaml, sys; yaml.safe_load(sys.stdin)'
+# View volume contents
+docker run --rm -v duo-uet-data:/data alpine ls -la /data
+
+# Docker Compose: check volume
+docker compose down
+docker compose up -d
+docker compose logs
+```
+
+### Config file location issues
+```bash
+# Check which config path is being used
+docker logs duo-uet | grep "Using config file"
+
+# Override with environment variable
+docker run -e UET_CONFIG_PATH=/custom/path/config.yaml ...
 ```
 
 ### Docker connectivity
@@ -340,13 +389,27 @@ lsof -i :8080
 
 # Check Docker logs
 docker compose logs -f
+
+# Test health check
+docker exec duo-uet wget -O- http://127.0.0.1:8080/
 ```
 
 ### Authentication failures
-- Verify Duo credentials in config
+- Verify Duo credentials in config via web UI (`/configure`)
 - Check redirect URI matches exactly
 - Ensure server time is synchronized (JWT validation)
 - Try `failmode: open` for testing
+
+### Starting fresh
+```bash
+# Remove volume and start over
+docker compose down -v
+docker compose up -d
+
+# Or with docker run
+docker volume rm duo-uet-data
+docker volume create duo-uet-data
+```
 
 ## Changelog
 

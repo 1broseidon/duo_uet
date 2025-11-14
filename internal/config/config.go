@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"user_experience_toolkit/internal/crypto"
@@ -65,19 +66,51 @@ type Config struct {
 }
 
 // LoadConfig loads and parses the YAML configuration file
-func LoadConfig(filepath string) (*Config, error) {
-	data, err := os.ReadFile(filepath)
+// If the file doesn't exist, it creates an empty config with initialized arrays
+func LoadConfig(cfgPath string) (*Config, error) {
+	data, err := os.ReadFile(cfgPath)
 	if err != nil {
+		// If file doesn't exist, create an empty config and persist it
+		if os.IsNotExist(err) {
+			config := &Config{
+				filepath:     cfgPath,
+				Applications: []Application{},
+				Tenants:      []Tenant{},
+			}
+			
+			// Try to create the parent directory if it doesn't exist
+			dir := filepath.Dir(cfgPath)
+			if dir != "" && dir != "." {
+				if err := os.MkdirAll(dir, 0755); err != nil {
+					return nil, fmt.Errorf("failed to create config directory: %v", err)
+				}
+			}
+			
+			// Persist the empty config immediately
+			if err := config.Save(); err != nil {
+				return nil, fmt.Errorf("failed to create initial config file: %v", err)
+			}
+			
+			return config, nil
+		}
 		return nil, fmt.Errorf("failed to read config file: %v", err)
 	}
 
 	config := &Config{
-		filepath: filepath,
+		filepath: cfgPath,
 	}
 
 	err = yaml.Unmarshal(data, config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse config file: %v", err)
+	}
+
+	// Initialize empty arrays if nil (for backward compatibility)
+	if config.Applications == nil {
+		config.Applications = []Application{}
+	}
+	if config.Tenants == nil {
+		config.Tenants = []Tenant{}
 	}
 
 	// Migrate old IsDMP field to Type field for backward compatibility

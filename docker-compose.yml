@@ -10,23 +10,20 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # Mount your config file (required)
-      - ./config.yaml:/app/config.yaml:ro
+      # Mount persistent config directory (config.yaml will be auto-created)
+      - uet-config:/app/config
 
-      # Mount certs directory if needed for HTTPS
+      # Mount certs directory if needed for SAML
       - ./certs:/app/certs:ro
 
-      # Mount encryption key if using encrypted config
+      # Optional: Mount encryption key if using encrypted config
       # - ./.uet_key:/app/.uet_key:ro
     environment:
       # Optional: Set master key for encrypted config
       # UET_MASTER_KEY: "your-secure-master-key"
 
       # Optional: Override config file location
-      # CONFIG_FILE: /app/config.yaml
-
-      # Optional: Set log level
-      # LOG_LEVEL: info
+      # UET_CONFIG_PATH: /app/config/config.yaml
 
       # Set timezone
       TZ: America/New_York
@@ -37,6 +34,11 @@ services:
       timeout: 3s
       start_period: 5s
       retries: 3
+
+# Named volumes for persistent storage
+volumes:
+  uet-config:
+    driver: local
 
 # Optional: Add networks if integrating with other services
 # networks:

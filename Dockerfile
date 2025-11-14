@@ -40,14 +40,14 @@ WORKDIR /app
 # Copy binary from builder (includes embedded static and templates)
 COPY --from=builder /build/uet /app/uet
 
-# Copy example config (users will mount their own config.yaml)
+# Copy example config for reference
 COPY --chown=uet:uet config.yaml.example /app/config.yaml.example
+
+# Create directory for persistent config (to be volume mounted)
+RUN mkdir -p /app/config && chown uet:uet /app/config
 
 # Create directory for certs (optional, can be volume mounted)
 RUN mkdir -p /app/certs && chown uet:uet /app/certs
-
-# Create directory for config (will be volume mounted in production)
-RUN mkdir -p /app/config && chown uet:uet /app/config
 
 # Switch to non-root user
 USER uet
@@ -59,5 +59,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:8080/ || exit 1
 
-# Run the application
+# Run the application (config will be auto-created at /app/config/config.yaml on first run)
 CMD ["/app/uet"]
