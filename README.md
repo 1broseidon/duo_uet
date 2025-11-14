@@ -118,7 +118,7 @@ export UET_MASTER_KEY="your-secure-password"
 ./uet
 ```
 
-See [docs/ENCRYPTION.md](docs/ENCRYPTION.md) for key management and best practices.
+See [config.yaml.example](config.yaml.example) for full configuration details.
 
 ## Supported Authentication Types
 
@@ -220,7 +220,7 @@ Automatically runs tests before each commit. To bypass:
 git commit --no-verify -m "message"
 ```
 
-See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for development guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Docker
 
@@ -289,15 +289,14 @@ Automated builds trigger on version tags (`v*.*.*`). Tagged images available as:
 │   ├── css/              # Design system, Bulma overrides
 │   ├── js/               # Theme switcher, Duo WebSDK v2
 │   └── images/           # Duo logo, assets
-├── docs/                 # Documentation
 ├── .github/workflows/    # CI/CD pipelines
+├── CONTRIBUTING.md       # Development guidelines
 └── config.yaml           # Runtime configuration
 ```
 
 ## Documentation
 
-- **[Encryption](docs/ENCRYPTION.md)** - AES-256-GCM config encryption guide
-- **[Contributing](docs/CONTRIBUTING.md)** - Development workflow and standards
+- **[Contributing](CONTRIBUTING.md)** - Development workflow and standards
 - **[Config Examples](config.yaml.example)** - Full configuration schema
 
 ## Security
