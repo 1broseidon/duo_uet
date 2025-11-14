@@ -1,6 +1,28 @@
 # Changelog
 
+
 All notable changes to this project will be documented in this file.
+## [v1.0.3] - 2025-11-14
+
+## [v1.0.3] - 2025-11-14
+
+### Added
+- **Encryption tool** - Encrypt sensitive fields in YAML configuration files using the `encrypt-config` command
+- **New application handlers** - Added handlers for DMP, SAML, OIDC, and Websdk applications in `cmd/uet/main.go`
+- **Dynamic application routes** - Routes are now dynamically generated based on application type and ID
+
+### Changed
+- **Configuration management** - Improved configuration loading, saving, and validation in `internal/config/config.go`
+- **Error handling** - Enhanced error messages and handling for better user experience
+- **Docker containerization** - Updated Dockerfile for better multi-arch support and build optimizations
+
+### Fixed
+- **Ignore patterns** - Fixed ignore patterns to prevent exclusion of cmd/ source directories
+- **CHANGELOG formatting** - Consolidated CHANGELOG into v1.0.0 release and updated formatting for future releases
+
+### Security
+- **Encryption** - Added encryption for sensitive fields in configuration files using a master key or .uet_key file
+
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
