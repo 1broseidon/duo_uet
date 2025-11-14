@@ -1,10 +1,20 @@
+<div align="center">
+
 # Duo User Experience Toolkit
+
+**Self-hosted testing platform for Duo authentication flows**
+
+Test, demonstrate, and validate Duo authentication policies across WebSDK v4, Device Management Portal, SAML 2.0, and OIDC.
 
 [![Go Version](https://img.shields.io/github/go-mod/go-version/1broseidon/duo_uet)](https://github.com/1broseidon/duo_uet)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](#docker)
 
-Self-hosted testing platform for Duo authentication flows across WebSDK v4, Device Management Portal, SAML 2.0, and OIDC. Built for Customer Success Engineers and technical teams who need to test, demonstrate, and validate Duo authentication policies with real-world scenarios.
+[Quick Start](#quick-start) • [Installation](#installation) • [Use Cases](#use-cases) • [Documentation](#documentation)
+
+</div>
+
+---
 
 ![Dashboard Screenshot](docs/screenshots/dashboard.png)
 
@@ -76,11 +86,13 @@ Config appears at `./duo-config/config.yaml`
 
 ### What You Get
 
-- **Multi-tenant support**: Test multiple Duo environments simultaneously
-- **Auto-provisioning**: Creates applications in Duo Admin Panel via API
-- **Full auth coverage**: WebSDK v4, DMP, SAML 2.0, OIDC in one interface
-- **Zero config required**: Web UI handles all configuration
-- **Persistent storage**: Configuration survives container restarts
+- **Multi-tenant support** — Test multiple Duo environments simultaneously
+- **Auto-provisioning** — Creates applications in Duo Admin Panel via API
+- **Full auth coverage** — WebSDK v4, DMP, SAML 2.0, OIDC in one interface
+- **Zero config required** — Web UI handles all configuration
+- **Persistent storage** — Configuration survives container restarts
+
+---
 
 ## Use Cases
 
@@ -101,6 +113,8 @@ Config appears at `./duo-config/config.yaml`
 - Test MFA policy enforcement in controlled environments
 - Validate SSO metadata and claim mappings
 - Security assessment of authentication flows
+
+---
 
 ## Installation
 
@@ -130,6 +144,8 @@ go build -o uet ./cmd/uet
 ```
 
 Access at `http://localhost:8080`
+
+---
 
 ## How It Works
 
@@ -209,6 +225,8 @@ export UET_MASTER_KEY="your-secure-password"
 
 **Note:** This toolkit is designed for testing and demonstration. For production Duo deployments, use Duo's production-grade integrations directly.
 
+---
+
 ## Supported Authentication Types
 
 Test and demonstrate all major Duo authentication flows:
@@ -227,6 +245,8 @@ Each flow provides:
 - Token/claim inspection for validation
 - Technical details for troubleshooting
 - Side-by-side policy comparison
+
+---
 
 ## Architecture
 
@@ -260,12 +280,14 @@ Each flow provides:
 
 **Tech Stack:**
 - **Backend:** Go 1.25, Fiber v3
-- **Frontend:** Vanilla JS, Bulma CSS, Custom Design System
+- **Frontend:** Vanilla JS, Bulma CSS, HTML
 - **Storage:** YAML with optional encryption
 - **Auth:** Duo Universal SDK (WebSDK v4), SAML 2.0, OIDC
 - **Container:** Docker, Alpine Linux, multi-arch
 
 **Development:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and code quality guidelines.
+
+---
 
 ## Docker
 
@@ -292,9 +314,11 @@ Multi-arch support: `linux/amd64`, `linux/arm64`
 
 ### Environment Variables
 
-- **`UET_CONFIG_PATH`** - Override config file location (default: `/app/config/config.yaml` in Docker, `./config.yaml` locally)
-- **`UET_MASTER_KEY`** - Master encryption key for encrypted configs (optional)
-- **`TZ`** - Timezone for logs and timestamps (default: `UTC`)
+- **`UET_CONFIG_PATH`** — Override config file location (default: `/app/config/config.yaml` in Docker, `./config.yaml` locally)
+- **`UET_MASTER_KEY`** — Master encryption key for encrypted configs (optional)
+- **`TZ`** — Timezone for logs and timestamps (default: `UTC`)
+
+---
 
 ## Project Structure
 
@@ -320,10 +344,14 @@ Multi-arch support: `linux/amd64`, `linux/arm64`
 └── config.yaml.example   # Configuration template
 ```
 
+---
+
 ## Documentation
 
-- **[Contributing](CONTRIBUTING.md)** - Development workflow and standards
-- **[Config Examples](config.yaml.example)** - Full configuration schema
+- **[Contributing](CONTRIBUTING.md)** — Development workflow and standards
+- **[Config Examples](config.yaml.example)** — Full configuration schema
+
+---
 
 ## Security Considerations
 
@@ -339,30 +367,9 @@ This toolkit is designed for **testing and demonstration purposes** in non-produ
 
 **Reporting vulnerabilities:** Open a GitHub issue.
 
+---
+
 ## Common Issues
-
-### Config not persisting
-```bash
-# Check if volume is mounted correctly
-docker inspect duo-uet | grep Mounts -A 10
-
-# View volume contents
-docker run --rm -v duo-uet-data:/data alpine ls -la /data
-
-# Docker Compose: check volume
-docker compose down
-docker compose up -d
-docker compose logs
-```
-
-### Config file location issues
-```bash
-# Check which config path is being used
-docker logs duo-uet | grep "Using config file"
-
-# Override with environment variable
-docker run -e UET_CONFIG_PATH=/custom/path/config.yaml ...
-```
 
 ### Docker connectivity
 ```bash
@@ -376,11 +383,6 @@ docker compose logs -f
 docker exec duo-uet wget -O- http://127.0.0.1:8080/
 ```
 
-### Authentication failures
-- Verify Duo credentials in config via web UI (`/configure`)
-- Check redirect URI matches exactly
-- Ensure server time is synchronized (JWT validation)
-- Try `failmode: open` for testing
 
 ### Starting fresh
 ```bash
@@ -397,18 +399,35 @@ docker volume create duo-uet-data
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history and [GitHub Releases](https://github.com/1broseidon/duo_uet/releases) for release notes.
 
-**Automated release notes:** When you push a version tag (e.g., `v1.0.0`), GitHub Actions automatically generates AI-powered release notes and updates the CHANGELOG.
+---
 
-## License
+## Contributing
 
-MIT © [Your Name]
+Contributions are welcome! Whether it's bug reports, feature requests, or code contributions, we'd love your help.
 
-## Support
+### Ways to Contribute
 
-- 🐛 **Issues:** [GitHub Issues](https://github.com/1broseidon/duo_uet/issues)
-- 📖 **Duo Docs:** [duo.com/docs](https://duo.com/docs)
-- 💬 **Questions:** Open a discussion or issue
+- 🐛 **Report bugs** — [Open an issue](https://github.com/1broseidon/duo_uet/issues/new)
+- 💡 **Suggest features** — [Start a discussion](https://github.com/1broseidon/duo_uet/discussions)
+- 📝 **Improve docs** — Help make documentation clearer
+- 🔧 **Submit PRs** — Fix bugs or add features
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ---
 
-**Built for Customer Success Engineers** | **Powered by Duo Security** | **Go 1.25**
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+Third-party dependencies are subject to their own licenses — see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+---
+
+<div align="center">
+
+**Built for Customer Success Engineers and technical teams**
+
+[⭐ Star on GitHub](https://github.com/1broseidon/duo_uet) • [📖 Documentation](CONTRIBUTING.md) • [🐛 Report Bug](https://github.com/1broseidon/duo_uet/issues)
+
+</div>
